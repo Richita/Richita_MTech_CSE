@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<microkernel>
+	<process id="AAIS">
+		<executor id="service1" type="sequential" listener="sample" next="server2">
+			<service ref="abc" />
+			<service ref="pqr" />
+		</executor>
+	</process>
+</microkernel>
