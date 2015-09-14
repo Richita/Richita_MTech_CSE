@@ -1,13 +1,12 @@
 /**
  * 
  */
-package com.microkernel.flow.support;
+package com.microkernel.core.flow.support;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 
-import com.microkernel.flow.State;
-import com.microkernel.util.Assert;
+import com.microkernel.core.flow.State;
+import com.microkernel.core.util.Assert;
 
 /**
  * State Transition has details about a state and the next state to which it

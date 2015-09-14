@@ -1,4 +1,4 @@
-package com.microkernel.xml.configuration;
+package com.microkernel.core.xml.configuration;
 
 public interface Builder<Q> {
 	

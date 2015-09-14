@@ -1,4 +1,4 @@
-package com.microkernel.flow;
+package com.microkernel.core.flow;
 
 /**
  * Holder holds all the flows and provide methods to retrive it when required by other

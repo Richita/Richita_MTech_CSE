@@ -1,4 +1,4 @@
-package com.microkernel.flow;
+package com.microkernel.core.flow;
 
 import java.util.Collection;
 

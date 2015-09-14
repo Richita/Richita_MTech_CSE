@@ -1,10 +1,8 @@
-package com.microkernel.adapter;
+package com.microkernel.core.adapter;
 
 import com.microkernel.core.Microkernel;
 import com.microkernel.core.MicrokernelAdapter;
 import com.microkernel.core.support.MicrokernelImpl;
-
-import java.util.Objects;
 
 /**
  * Created by NinadIngole on 9/13/2015.

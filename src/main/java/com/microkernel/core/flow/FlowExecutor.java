@@ -1,4 +1,4 @@
-package com.microkernel.flow;
+package com.microkernel.core.flow;
 
 public interface FlowExecutor {
 

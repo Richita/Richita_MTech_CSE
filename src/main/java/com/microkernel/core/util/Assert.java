@@ -1,4 +1,4 @@
-package com.microkernel.util;
+package com.microkernel.core.util;
 
 public class Assert {
 	

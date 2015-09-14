@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <microkernel>
-	<process id="AAIS">
-		<executor id="service1" type="sequential" listener="sample" next="server2">
+	<flow id="AAIS">
+		<listeners>
+			<listener ref="" />
+			<listener ref="" />
+		</listeners>
+		<executor id="service1" type="sequential" next="server2">
 			<service ref="abc" />
 			<service ref="pqr" />
 		</executor>
-	</process>
+	</flow>
 </microkernel>

@@ -1,8 +1,8 @@
-package com.microkernel.xml.configuration;
+package com.microkernel.core.xml.configuration;
 
 import org.w3c.dom.Element;
 
-import com.microkernel.flow.Flow;
+import com.microkernel.core.flow.Flow;
 
 public class ProcessParser implements Parser<Flow, Void> {
 

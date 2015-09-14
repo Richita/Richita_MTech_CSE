@@ -1,9 +1,9 @@
 /**
  * 
  */
-package com.microkernel.state;
+package com.microkernel.core.state;
 
-import com.microkernel.flow.State;
+import com.microkernel.core.flow.State;
 
 /**
  * @author NinadIngole

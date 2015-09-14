@@ -1,4 +1,4 @@
-package com.microkernel.service;
+package com.microkernel.core.service;
 
 public interface Service<T> {
 	

@@ -1,9 +1,9 @@
-package com.microkernel.task.executor;
+package com.microkernel.core.task.executor;
 
 import java.io.Serializable;
 
-import com.microkernel.task.TaskExecutor;
-import com.microkernel.util.Assert;
+import com.microkernel.core.task.TaskExecutor;
+import com.microkernel.core.util.Assert;
 
 public class SyncTaskExecutor implements TaskExecutor,Serializable {
 

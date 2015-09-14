@@ -1,4 +1,4 @@
-package com.microkernel.task;
+package com.microkernel.core.task;
 
 public interface TaskExecutor {
 	

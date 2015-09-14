@@ -1,4 +1,4 @@
-package com.microkernel.state;
+package com.microkernel.core.state;
 
 public class StartState extends AbstractState {
 
