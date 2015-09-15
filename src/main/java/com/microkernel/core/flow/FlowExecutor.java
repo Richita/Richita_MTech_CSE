@@ -1,6 +1,8 @@
 package com.microkernel.core.flow;
 
+import com.microkernel.core.service.Service;
+
 public interface FlowExecutor {
 
-	String executeState(State state);
+	String executeService(Service state);
 }

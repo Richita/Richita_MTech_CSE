@@ -4,9 +4,10 @@ import org.w3c.dom.Element;
 
 import com.microkernel.core.flow.Flow;
 
-public class ProcessParser implements Parser<Flow, Void> {
+public class FlowParser implements Parser<Flow> {
 
-	public Flow parse(Element element, Builder<Void> builder) {
+	public Flow parse(Element element, Builder builder) {
+
 		return null;
 	}
 
