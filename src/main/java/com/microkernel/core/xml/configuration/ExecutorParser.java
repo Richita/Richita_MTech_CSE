@@ -38,6 +38,8 @@ public class ExecutorParser implements Parser<StateTransition>{
         String type = element.getAttribute(ATTR_TYPE);
         String next = element.getAttribute(ATTR_NEXT);
 
+        if("".equalsIgnoreCase(next)) next = null;
+
         NodeList serviceElement = element.getElementsByTagName("service");
 
         Set<Service> services = new HashSet<Service>();
