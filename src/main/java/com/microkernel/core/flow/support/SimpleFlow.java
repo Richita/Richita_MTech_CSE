@@ -28,6 +28,11 @@ public class SimpleFlow implements Flow {
 		super();
 		this.name = name;
 		this.transitions = transitions;
+		initiateTransitions();
+	}
+
+	private void initiateTransitions() {
+
 	}
 
 	public String getName() {

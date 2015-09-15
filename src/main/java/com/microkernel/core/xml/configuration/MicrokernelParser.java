@@ -13,25 +13,25 @@ import java.util.Collection;
 /**
  * Created by NinadIngole on 9/15/2015.
  */
-public class MicrokernelParser implements Parser<Void> {
+public class MicrokernelParser implements Parser<Collection<Flow>> {
 
 
 
     @Override
-    public Void parse(Element element, ParserContext context) {
+    public Collection<Flow> parse(Element element, ParserContext context) {
 
         Collection<Flow> flows = new ArrayList<Flow>();
 
         ParserContext context1 = new GenericParserContext();
 
-        NodeList nodes = element.getChildNodes();
+        NodeList nodes = element.getElementsByTagName("flow");
         for(int i = 0; i < nodes.getLength(); i++){
             Element childElement = (Element) nodes.item(i);
 
             Flow flow = new FlowParser().parse(childElement,context1);
-
+            flows.add(flow);
         }
 
-        return null;
+        return flows;
     }
 }

@@ -22,7 +22,7 @@ public class FlowParser implements Parser<Flow> {
 		String flowName = element.getAttribute(ATTR_ID);
 		Collection<StateTransition> stateTransitions = new ArrayList<StateTransition>();
 
-		NodeList executors = element.getChildNodes();
+		NodeList executors = element.getElementsByTagName("executor");
 
 		for(int i = 0 ; i < executors.getLength(); i++){
 			StateTransition transition = new ExecutorParser().parse((Element) executors.item(i), context);
