@@ -1,11 +1,12 @@
 package com.microkernel.core.flow.support;
 
+import com.microkernel.core.flow.Flow;
+import com.microkernel.core.flow.FlowHolder;
+import com.microkernel.core.flow.State;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
-
-import com.microkernel.core.flow.Flow;
-import com.microkernel.core.flow.State;
 
 public class SimpleFlow implements Flow {
 
@@ -18,6 +19,8 @@ public class SimpleFlow implements Flow {
 	private HashMap<String, State> stateMap = new HashMap<String, State>();
 	
 	private State startState;
+
+	private State endState;
 	
 	
 	
@@ -46,5 +49,6 @@ public class SimpleFlow implements Flow {
 		// TODO Auto-generated method stub
 		
 	}
+
 
 }

@@ -1,5 +1,7 @@
 package com.microkernel.core.flow;
 
+import java.util.Collection;
+
 /**
  * Holder holds all the flows and provide methods to retrive it when required by other
  * component
@@ -9,6 +11,6 @@ package com.microkernel.core.flow;
  */
 public interface FlowHolder {
 	
-	Flow getFlow(String name);
+	Collection<Flow> getFlows();
 
 }

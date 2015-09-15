@@ -3,8 +3,6 @@
  */
 package com.microkernel.core.flow.support;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.microkernel.core.flow.State;
 import com.microkernel.core.util.Assert;
 
@@ -21,16 +19,13 @@ public final class StateTransition {
 	private final String pattern;
 	private final String next;
 
-	public StateTransition(State state,String pattern, String next) {
+	private StateTransition(State state,String pattern, String next) {
 		Assert.notNull(state);
 		
-		if (StringUtils.isEmpty(pattern)) {
-			this.pattern = "*";
-		} else {
-			this.pattern = pattern;
-		}
+
 		this.state = state;
 		this.next = next;
+		this.pattern = pattern;
 	}
 
 	public State getState() {
@@ -48,6 +43,14 @@ public final class StateTransition {
 	public boolean isEnd(){
 		return next == null;
 	}
-	
+
+
+	public static StateTransition createStateTransition(State state, String pattern, String next){
+		return new StateTransition(state,pattern,next);
+	}
+
+	public static StateTransition createEndStateTransition(State state,String pattern){
+		return createStateTransition(state,pattern,null);
+	}
 	
 }

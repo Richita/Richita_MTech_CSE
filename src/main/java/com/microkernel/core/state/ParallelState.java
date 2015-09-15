@@ -1,11 +1,10 @@
 package com.microkernel.core.state;
 
+import com.microkernel.core.flow.FlowExecution;
+import com.microkernel.core.flow.FlowExecutionStatus;
 import com.microkernel.core.flow.FlowExecutor;
 import com.microkernel.core.service.Service;
-import org.springframework.batch.core.job.flow.FlowExecution;
-import org.springframework.batch.core.job.flow.FlowExecutionStatus;
-import org.springframework.core.task.AsyncTaskExecutor;
-import org.springframework.core.task.TaskRejectedException;
+import com.microkernel.core.task.TaskExecutor;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,13 +19,11 @@ import java.util.concurrent.FutureTask;
  */
 public class ParallelState extends AbstractState {
 
-    private final Set<Service> services;
 
-    private AsyncTaskExecutor taskExecutor;
+    private TaskExecutor taskExecutor;
 
     public ParallelState(String name, Set<Service> services) {
-        super(name);
-        this.services = services;
+        super(name,services);
     }
 
 
@@ -34,13 +31,14 @@ public class ParallelState extends AbstractState {
     public FlowExecutionStatus handle(final FlowExecutor executor) {
 
         Collection<Future<FlowExecution>> tasks = new ArrayList<Future<FlowExecution>>();
+        Set<Service> services = getServices();
 
         for (final Service service : services) {
             FutureTask<FlowExecution> task = new FutureTask<FlowExecution>(new Callable<FlowExecution>() {
                 @Override
                 public FlowExecution call() throws Exception {
                     String exitStatus = executor.executeService(service);
-                    return new FlowExecution(exitStatus, null);
+                    return null;
                 }
             });
 
@@ -48,7 +46,7 @@ public class ParallelState extends AbstractState {
 
             try {
                 taskExecutor.execute(task);
-            } catch (TaskRejectedException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -66,7 +64,7 @@ public class ParallelState extends AbstractState {
 
 
         }
-        return FlowExecutionStatus.COMPLETED;
+        return null;
 
 
     }
