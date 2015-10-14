@@ -1,8 +1,8 @@
 package com.microkernel.core.flow;
 
-import com.microkernel.core.service.Service;
-
 import java.util.Set;
+
+import com.microkernel.core.Service;
 
 /**
  *
