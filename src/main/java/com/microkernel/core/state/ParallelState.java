@@ -1,11 +1,5 @@
 package com.microkernel.core.state;
 
-import com.microkernel.core.flow.FlowExecution;
-import com.microkernel.core.flow.FlowExecutionStatus;
-import com.microkernel.core.flow.FlowExecutor;
-import com.microkernel.core.service.Service;
-import com.microkernel.core.task.TaskExecutor;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
@@ -13,6 +7,12 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
+
+import com.microkernel.core.Service;
+import com.microkernel.core.flow.FlowExecution;
+import com.microkernel.core.flow.FlowExecutionStatus;
+import com.microkernel.core.flow.FlowExecutor;
+import com.microkernel.core.task.TaskExecutor;
 
 /**
  * Created by NinadIngole on 9/14/2015.

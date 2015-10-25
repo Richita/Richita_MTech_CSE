@@ -1,22 +1,21 @@
 package com.microkernel.core.xml.configuration;
 
-import com.microkernel.core.flow.support.StateTransition;
-import com.microkernel.core.service.Service;
-import com.microkernel.core.state.ParallelState;
-import com.microkernel.core.state.SequentialState;
-import com.microkernel.core.xml.Parser;
-import com.microkernel.core.xml.ParserContext;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import com.microkernel.core.Service;
+import com.microkernel.core.flow.support.StateTransition;
+import com.microkernel.core.state.ParallelState;
+import com.microkernel.core.state.SequentialState;
+import com.microkernel.core.xml.Parser;
 
 /**
  * Created by NinadIngole on 9/15/2015.
  */
-public class ExecutorParser implements Parser<StateTransition>{
+public class StateParser implements Parser<StateTransition>{
     private final String ELE_EXECUTOR = "executor";
 
     private final String ATTR_ID = "id";
@@ -33,7 +32,7 @@ public class ExecutorParser implements Parser<StateTransition>{
 
 
     @Override
-    public StateTransition parse(Element element, ParserContext context) {
+    public StateTransition parse(Element element) {
         String executorId = element.getAttribute(ATTR_ID);
         String type = element.getAttribute(ATTR_TYPE);
         String next = element.getAttribute(ATTR_NEXT);
@@ -44,7 +43,7 @@ public class ExecutorParser implements Parser<StateTransition>{
 
         Set<Service> services = new HashSet<Service>();
         for(int i = 0 ; i < serviceElement.getLength(); i++){
-            Service service = new ServiceParser().parse((Element) serviceElement.item(i),context);
+            Service service = new ServiceParser().parse((Element) serviceElement.item(i));
             services.add(service);
         }
 

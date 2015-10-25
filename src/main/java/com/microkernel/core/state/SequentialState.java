@@ -1,10 +1,10 @@
 package com.microkernel.core.state;
 
+import java.util.Set;
+
+import com.microkernel.core.Service;
 import com.microkernel.core.flow.FlowExecutionStatus;
 import com.microkernel.core.flow.FlowExecutor;
-import com.microkernel.core.service.Service;
-
-import java.util.Set;
 
 public class SequentialState extends AbstractState {
 

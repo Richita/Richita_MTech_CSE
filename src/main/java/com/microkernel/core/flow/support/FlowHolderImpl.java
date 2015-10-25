@@ -10,19 +10,14 @@ import com.microkernel.core.flow.FlowHolder;
 
 public class FlowHolderImpl implements FlowHolder {
 
-	private static FlowHolderImpl INSTANCE = null;
+	
 	
 	private HashMap<String, Flow> flows = new HashMap<String, Flow>();
 	
-	public static FlowHolderImpl getInstance(){
-		if(INSTANCE == null){
-			synchronized (FlowHolderImpl.class) {
-				if(INSTANCE == null){
-					INSTANCE = new FlowHolderImpl();
-				}
-			}
+	public FlowHolderImpl(Collection<Flow> flows) {
+		for(Flow flow: flows){
+			this.flows.put(flow.getName(), flow);
 		}
-		return INSTANCE;
 	}
 	
 	public Flow getFlow(String name) {
