@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<microkernel>
+	<flow id="AAIS">
+		<state id="service1" type="sequential" next="service2">
+			<service ref="abc" />
+			<service ref="pqr" />
+		</state>
+		<state id="service2" type="sequential">
+			<service ref="abc" />
+			<service ref="pqr" />
+		</state>
+	</flow>
+</microkernel>
