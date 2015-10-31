@@ -9,6 +9,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -20,12 +21,26 @@ import com.microkernel.core.flow.FlowHolder;
 import com.microkernel.core.flow.support.FlowHolderImpl;
 import com.microkernel.core.flow.support.SimpleFlow;
 import com.microkernel.core.util.Assert;
+import com.microkernel.core.xml.Parser;
 import com.microkernel.core.xml.ProcessDefinitionParser;
 
 /**
  * Created by NinadIngole on 9/15/2015.
  */
 public class MicrokernelProcessDefinitionParser implements  ProcessDefinitionParser{
+
+	@Autowired
+	Parser<Flow> parser;
+	
+	
+	
+	public Parser<Flow> getParser() {
+		return parser;
+	}
+
+	public void setParser(Parser<Flow> parser) {
+		this.parser = parser;
+	}
 
 	public FlowHolder parseXML(File f) {
 		FlowHolder holder = null;
@@ -70,7 +85,7 @@ public class MicrokernelProcessDefinitionParser implements  ProcessDefinitionPar
 			
 			Element item = (Element) elements.item(i);
 			
-			Flow flow = new FlowParser().parse(item);
+			Flow flow = parser.parse(item);
 			
 			
 			Assert.notNull(flow, "Flow Object is Null");

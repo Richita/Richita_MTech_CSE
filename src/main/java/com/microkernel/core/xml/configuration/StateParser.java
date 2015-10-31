@@ -1,8 +1,11 @@
 package com.microkernel.core.xml.configuration;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -16,7 +19,22 @@ import com.microkernel.core.xml.Parser;
  * Created by NinadIngole on 9/15/2015.
  */
 public class StateParser implements Parser<StateTransition>{
-    private final String ELE_EXECUTOR = "executor";
+    
+	Parser<Service<?>> parser;
+	
+	
+	
+	public Parser<Service<?>> getParser() {
+		return parser;
+	}
+
+
+	public void setParser(Parser<Service<?>> parser) {
+		this.parser = parser;
+	}
+
+
+	private final String ELE_EXECUTOR = "executor";
 
     private final String ATTR_ID = "id";
 
@@ -31,7 +49,6 @@ public class StateParser implements Parser<StateTransition>{
     private final String SEQUENTIAL = "sequential";
 
 
-    @Override
     public StateTransition parse(Element element) {
         String executorId = element.getAttribute(ATTR_ID);
         String type = element.getAttribute(ATTR_TYPE);
@@ -41,9 +58,9 @@ public class StateParser implements Parser<StateTransition>{
 
         NodeList serviceElement = element.getElementsByTagName("service");
 
-        Set<Service> services = new HashSet<Service>();
+        List<Service<?>> services = new ArrayList<Service<?>>();
         for(int i = 0 ; i < serviceElement.getLength(); i++){
-            Service service = new ServiceParser().parse((Element) serviceElement.item(i));
+            Service<?> service = parser.parse((Element) serviceElement.item(i));
             services.add(service);
         }
 
