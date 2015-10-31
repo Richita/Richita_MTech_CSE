@@ -1,10 +1,14 @@
 package com.microkernel.core.flow.support;
 
-import com.microkernel.core.flow.Flow;
-import com.microkernel.core.flow.FlowHolder;
-import com.microkernel.core.flow.State;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
-import java.util.*;
+import com.microkernel.core.flow.Flow;
+import com.microkernel.core.flow.State;
 
 public class SimpleFlow implements Flow {
 

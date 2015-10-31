@@ -41,7 +41,7 @@ public class SimpleServiceLocator implements ServiceLocator, Ordered,BeanPostPro
 	}
 
 	public int getOrder() {
-		return -20;
+		return Ordered.HIGHEST_PRECEDENCE;
 	}
 
 	

@@ -2,7 +2,7 @@ package com.microkernel.core.state;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -22,7 +22,7 @@ public class ParallelState extends AbstractState {
 
     private TaskExecutor taskExecutor;
 
-    public ParallelState(String name, Set<Service<?>> services) {
+    public ParallelState(String name, List<Service<?>> services) {
         super(name,services);
     }
 
@@ -30,7 +30,7 @@ public class ParallelState extends AbstractState {
     public FlowExecutionStatus handle(final FlowExecutor executor) {
 
         Collection<Future<FlowExecution>> tasks = new ArrayList<Future<FlowExecution>>();
-        Set<Service<?>> services = getServices();
+        List<Service<?>> services = getServices();
 
         for (final Service<?> service : services) {
             FutureTask<FlowExecution> task = new FutureTask<FlowExecution>(new Callable<FlowExecution>() {

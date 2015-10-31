@@ -20,4 +20,27 @@
 		class="com.dummy.service.HelloWorldService">
 		<property name="name" value="HelloWorld"/>	
 	</bean>
+	
+	<!-- PARSER Beans -->
+	
+	<bean id="processDefParser" 
+		class="com.microkernel.core.xml.configuration.MicrokernelProcessDefinitionParser">
+		<property name="parser" ref="flowParser" />
+	</bean>
+	
+	<bean id="flowParser"
+		class="com.microkernel.core.xml.configuration.FlowParser">
+		<property name="parser" ref="stateParser" />
+	</bean>
+	
+	<bean id="stateParser"
+		class="com.microkernel.core.xml.configuration.StateParser">
+		<property name="parser" ref="serviceParser" />
+	</bean>
+	
+	<bean id="serviceParser"
+		class="com.microkernel.core.xml.configuration.ServiceParser" depends-on="serviceLocator">
+		<property name="serviceLocator" ref="serviceLocator" />	
+	</bean>
+	
 </beans>

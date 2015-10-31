@@ -1,6 +1,6 @@
 package com.microkernel.core.state;
 
-import java.util.Set;
+import java.util.List;
 
 import com.microkernel.core.Service;
 import com.microkernel.core.flow.FlowExecutionStatus;
@@ -11,7 +11,7 @@ public class SequentialState extends AbstractState {
 	private final String SEQ_TYPE = "sequential";
 
 
-	public SequentialState(String name, Set<Service<?>> services) {
+	public SequentialState(String name, List<Service<?>> services) {
 		super(name,services);
 
 	}
@@ -20,7 +20,7 @@ public class SequentialState extends AbstractState {
 
 	@Override
 	public FlowExecutionStatus handle(FlowExecutor executor) {
-		Set<Service<?>> services = getServices();
+		List<Service<?>> services = getServices();
 
 		for(Service service : services){
 			executor.executeService(service);
