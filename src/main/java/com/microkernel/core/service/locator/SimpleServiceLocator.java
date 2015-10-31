@@ -7,7 +7,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.Ordered;
 
 import com.microkernel.core.ServiceLocator;
-import com.microkernel.core.service.Service;
+import com.microkernel.core.Service;
 
 public class SimpleServiceLocator implements ServiceLocator, Ordered,BeanPostProcessor{
 
@@ -43,5 +43,7 @@ public class SimpleServiceLocator implements ServiceLocator, Ordered,BeanPostPro
 	public int getOrder() {
 		return -20;
 	}
+
+	
 
 }

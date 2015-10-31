@@ -1,7 +1,6 @@
 package com.dummy.service;
 
-import com.microkernel.core.ServiceContext;
-import com.microkernel.core.service.Service;
+import com.microkernel.core.Service;
 
 public class HelloWorldService implements Service<String>{
 
@@ -15,10 +14,9 @@ public class HelloWorldService implements Service<String>{
 		this.name = name;
 	}
 
+	
 
 
-	public void execute(String request, ServiceContext context) {
-		System.out.println("Service executed");
-	}
+
 	
 }

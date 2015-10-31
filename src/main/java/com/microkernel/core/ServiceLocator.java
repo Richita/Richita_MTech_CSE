@@ -1,6 +1,6 @@
 package com.microkernel.core;
 
-import com.microkernel.core.service.Service;
+import com.microkernel.core.Service;
 
 public interface ServiceLocator {
 
