@@ -11,7 +11,7 @@ public interface State {
 
 	String getName();
 
-	Set<Service> getServices();
+	Set<Service<?>> getServices();
 
 	FlowExecutionStatus handle(FlowExecutor executor);
 	

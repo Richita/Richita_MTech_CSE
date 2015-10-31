@@ -7,7 +7,7 @@ package com.microkernel.core;
  * @author NinadIngole
  * @version 0.1
  */
-public interface <T> {
+public interface Service<T> {
 
 	String getName();
 	

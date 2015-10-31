@@ -17,14 +17,14 @@ import com.microkernel.core.flow.State;
 public abstract class AbstractState implements State {
 
 	private final String name;
-	private Set<Service> services;
+	private Set<Service<?>> services;
 
 	public AbstractState(String name) {
 		super();
 		this.name = name;
 	}
 
-	public AbstractState(String name,Set<Service> services){
+	public AbstractState(String name,Set<Service<?>> services){
 		this.name = name;
 		this.services = services;
 	}
@@ -35,8 +35,8 @@ public abstract class AbstractState implements State {
 
 	public abstract FlowExecutionStatus handle(FlowExecutor executor);
 
-	public void setServices(Set<Service> services){this.services = services;}
+	public void setServices(Set<Service<?>> services){this.services = services;}
 
-	public Set<Service> getServices(){return this.services;}
+	public Set<Service<?>> getServices(){return this.services;}
 
 }

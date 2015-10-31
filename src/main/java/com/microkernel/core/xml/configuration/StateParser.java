@@ -31,7 +31,6 @@ public class StateParser implements Parser<StateTransition>{
     private final String SEQUENTIAL = "sequential";
 
 
-    @Override
     public StateTransition parse(Element element) {
         String executorId = element.getAttribute(ATTR_ID);
         String type = element.getAttribute(ATTR_TYPE);
@@ -41,7 +40,7 @@ public class StateParser implements Parser<StateTransition>{
 
         NodeList serviceElement = element.getElementsByTagName("service");
 
-        Set<Service> services = new HashSet<Service>();
+        Set<Service<?>> services = new HashSet<Service<?>>();
         for(int i = 0 ; i < serviceElement.getLength(); i++){
             Service service = new ServiceParser().parse((Element) serviceElement.item(i));
             services.add(service);

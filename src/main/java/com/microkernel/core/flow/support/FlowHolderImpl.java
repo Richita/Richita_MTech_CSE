@@ -1,8 +1,6 @@
-
 package com.microkernel.core.flow.support;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 
 import com.microkernel.core.flow.Flow;
@@ -25,7 +23,6 @@ public class FlowHolderImpl implements FlowHolder {
 	}
 
 
-	@Override
 	public Collection<Flow> getFlows() {
 		return this.flows.values();
 	}

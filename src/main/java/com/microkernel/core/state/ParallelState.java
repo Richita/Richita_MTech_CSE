@@ -22,20 +22,18 @@ public class ParallelState extends AbstractState {
 
     private TaskExecutor taskExecutor;
 
-    public ParallelState(String name, Set<Service> services) {
+    public ParallelState(String name, Set<Service<?>> services) {
         super(name,services);
     }
 
 
-    @Override
     public FlowExecutionStatus handle(final FlowExecutor executor) {
 
         Collection<Future<FlowExecution>> tasks = new ArrayList<Future<FlowExecution>>();
-        Set<Service> services = getServices();
+        Set<Service<?>> services = getServices();
 
-        for (final Service service : services) {
+        for (final Service<?> service : services) {
             FutureTask<FlowExecution> task = new FutureTask<FlowExecution>(new Callable<FlowExecution>() {
-                @Override
                 public FlowExecution call() throws Exception {
                     String exitStatus = executor.executeService(service);
                     return null;
@@ -69,7 +67,6 @@ public class ParallelState extends AbstractState {
 
     }
 
-    @Override
     public boolean isEndState() {
         return false;
     }
