@@ -7,7 +7,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.microkernel.core.Service;
 import com.microkernel.core.flow.Flow;
+import com.microkernel.core.flow.FlowExecutionStatus;
+import com.microkernel.core.flow.ServiceExecutor;
 import com.microkernel.core.flow.State;
 
 public class SimpleFlow implements Flow {
@@ -22,6 +25,7 @@ public class SimpleFlow implements Flow {
 	
 	private State startState;
 
+	private ServiceExecutor executor;
 	
 	
 	public SimpleFlow(String name, List<StateTransition> transitions) {
@@ -30,6 +34,20 @@ public class SimpleFlow implements Flow {
 		this.transitions = transitions;
 		initiateTransitions();
 	}
+
+	
+	
+	public ServiceExecutor getExecutor() {
+		return executor;
+	}
+
+
+
+	public void setExecutor(ServiceExecutor executor) {
+		this.executor = executor;
+	}
+
+
 
 	private void initiateTransitions() {
 		startState = null;
@@ -86,10 +104,44 @@ public class SimpleFlow implements Flow {
 		return this.stateMap.values();
 	}
 
-	public void start() {
-		// TODO Auto-generated method stub
+	public void start(Object request) {
+		State state = this.startState;
+		FlowExecutionStatus status  = FlowExecutionStatus.STARTED;
+		
+		while(isFlowContinue(state,status)){
+			
+			state.handle(request,executor);
+			
+			
+			state = doNext(state,status);
+		}
+		
+		
 		
 	}
+
+	private State doNext(State state, FlowExecutionStatus status) {
+		Set<StateTransition> set = this.transitionMap.get(state.getName());
+		for(StateTransition transition: set)
+		{
+			String next = transition.getNext();
+			System.out.println(next);
+			State state2 = stateMap.get(next);
+			return state2;
+		}
+		return null;
+	}
+
+	private boolean isFlowContinue(State state, FlowExecutionStatus status) {
+		if(null == state || FlowExecutionStatus.FAILED.equals(status))
+			return false;
+		
+		return true;
+	}
+
+	
+
+	
 
 
 }

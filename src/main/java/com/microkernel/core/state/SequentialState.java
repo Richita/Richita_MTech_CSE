@@ -1,10 +1,12 @@
 package com.microkernel.core.state;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import com.microkernel.core.Service;
 import com.microkernel.core.flow.FlowExecutionStatus;
-import com.microkernel.core.flow.FlowExecutor;
+import com.microkernel.core.flow.ServiceExecutor;
 
 public class SequentialState extends AbstractState {
 
@@ -19,14 +21,22 @@ public class SequentialState extends AbstractState {
 
 
 	@Override
-	public FlowExecutionStatus handle(FlowExecutor executor) {
+	public void handle(Object request,ServiceExecutor executor) {
 		List<Service<?>> services = getServices();
 
 		for(Service service : services){
-			executor.executeService(service);
+			Future<?> executeService = executor.executeService(service,request);
+			/*try {
+				Object object = executeService.get();
+				if(object != null)
+					break;
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			}*/
 		}
 
-		return null;
 	}
 	
 	public boolean isEndState() {

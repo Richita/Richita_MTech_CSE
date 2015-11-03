@@ -13,7 +13,7 @@ public interface State {
 
 	List<Service<?>> getServices();
 
-	FlowExecutionStatus handle(FlowExecutor executor);
+	void handle(Object request,ServiceExecutor executor);
 	
 	boolean isEndState();
 }

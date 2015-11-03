@@ -14,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.xml.sax.SAXException;
 
+import com.microkernel.core.Orchestrator;
 import com.microkernel.core.flow.FlowHolder;
 import com.microkernel.core.xml.ProcessDefinitionParser;
 import com.microkernel.core.xml.configuration.MicrokernelProcessDefinitionParser;
@@ -46,12 +47,10 @@ public class TestParser implements ApplicationContextAware{
 	@Test
     public void testParsing() throws ParserConfigurationException, IOException, SAXException {
     	
-		ProcessDefinitionParser parser = appContext.getBean(ProcessDefinitionParser.class);
+		Orchestrator bean = appContext.getBean(Orchestrator.class);
+		bean.process("Hello World", "AAIS");
     	
-    	
-    	ClassPathResource processDefFile = new ClassPathResource("process-definition.xml");
     
-    	FlowHolder parseXML = parser.parseXML(processDefFile.getFile());
      
     }
 }
