@@ -13,4 +13,6 @@ public interface FlowHolder {
 	
 	Collection<Flow> getFlows();
 
+	Flow getFlow(String name);
+	
 }

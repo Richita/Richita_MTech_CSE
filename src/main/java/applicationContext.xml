@@ -15,7 +15,7 @@
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="properties">
 			<map>
-				<entry key="processDefLoc" value="classpath:process-definition.xml"></entry>
+				<entry key="processDefLoc" value="G:/Richita/process-definition.xml"></entry>
 			</map>
 		</property>	
 	</bean>
@@ -30,11 +30,24 @@
 		<property name="name" value="HelloWorld"/>	
 	</bean>
 	
+	
 	<bean id="flowHolder"
 		class="com.microkernel.core.flow.support.FlowHolderImpl">
 		<property name="parser" ref="processDefParser" />
 		<property name="processDefinitionLoc" value="${processDefLoc}" />	
 	</bean>
+	
+	<bean id="processOrchestrator"
+		class="com.microkernel.core.orchestrator.ProcessOrchestrator">
+		<property name="holder" ref="flowHolder" />
+		<property name="executor" ref="processExecutor" />
+	</bean>
+	
+	<bean id="processExecutor"
+		class="com.microkernel.core.orchestrator.ProcessFlowExecutor"></bean>
+	
+	<bean id="serviceExecutor"
+		class="com.microkernel.core.task.executor.AsyncServiceExecutor" />
 	
 	<!-- PARSER Beans -->
 	
@@ -46,6 +59,7 @@
 	<bean id="flowParser"
 		class="com.microkernel.core.xml.configuration.FlowParser">
 		<property name="parser" ref="stateParser" />
+		<property name="executor" ref="serviceExecutor" />
 	</bean>
 	
 	<bean id="stateParser"

@@ -8,6 +8,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import com.microkernel.core.flow.Flow;
+import com.microkernel.core.flow.ServiceExecutor;
 import com.microkernel.core.flow.support.SimpleFlow;
 import com.microkernel.core.flow.support.StateTransition;
 import com.microkernel.core.xml.Parser;
@@ -17,8 +18,19 @@ public class FlowParser implements Parser<Flow> {
 	@Autowired
 	Parser<StateTransition> parser;
 	
+	@Autowired
+	ServiceExecutor executor;
 	
 	
+	
+	public ServiceExecutor getExecutor() {
+		return executor;
+	}
+
+	public void setExecutor(ServiceExecutor executor) {
+		this.executor = executor;
+	}
+
 	public Parser<StateTransition> getParser() {
 		return parser;
 	}
@@ -43,8 +55,9 @@ public class FlowParser implements Parser<Flow> {
 			if(transition != null)
 				stateTransitions.add(transition);
 		}
-
-		return new SimpleFlow(flowName,stateTransitions);
+		SimpleFlow flow = new SimpleFlow(flowName,stateTransitions);
+		flow.setExecutor(executor);
+		return flow;
 	}
 
 }

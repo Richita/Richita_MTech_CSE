@@ -59,13 +59,15 @@ public class FlowHolderImpl implements FlowHolder,InitializingBean {
 	public Collection<Flow> getFlows() {
 		return this.flows.values();
 	}
+	
+	
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		if(null == parser)
 			throw new IllegalArgumentException("Parser is Not set cannot parse process-definition.");
 		
-		File f = new File(this.getClass().getClassLoader().getResource(processDefinitionLoc).toString());
+		File f = new File(processDefinitionLoc);
 		if(f.exists()){
 			FlowHolder holder = parser.parseXML(f);
 			parseFlows(holder.getFlows());

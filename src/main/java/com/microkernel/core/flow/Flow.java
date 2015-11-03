@@ -16,6 +16,6 @@ public interface Flow {
 	
 	Collection<State> getStates();
 	
-	void start();
+	void start(Object request);
 	
 }
