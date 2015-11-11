@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -18,6 +19,8 @@ import com.microkernel.core.Orchestrator;
 import com.microkernel.core.flow.FlowHolder;
 import com.microkernel.core.xml.ProcessDefinitionParser;
 import com.microkernel.core.xml.configuration.MicrokernelProcessDefinitionParser;
+
+import jdk.nashorn.internal.ir.annotations.Ignore;
 
 /**
  * Created by NinadIngole on 9/15/2015.
@@ -45,12 +48,20 @@ public class TestParser implements ApplicationContextAware{
 
 
 	@Test
+	@Ignore
     public void testParsing() throws ParserConfigurationException, IOException, SAXException {
-    	
-		Orchestrator bean = appContext.getBean(Orchestrator.class);
+    	ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+		Orchestrator bean = ctx.getBean(Orchestrator.class);
 		bean.process("Hello World", "AAIS");
     	
     
      
     }
+	
+	public static void main(String... args){
+		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+		Orchestrator bean = ctx.getBean(Orchestrator.class);
+		bean.process("Hello World", "AAIS");
+    	
+	}
 }

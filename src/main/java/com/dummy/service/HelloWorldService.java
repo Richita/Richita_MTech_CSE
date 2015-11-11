@@ -14,8 +14,9 @@ public class HelloWorldService implements Service<String>{
 		this.name = name;
 	}
 
-	public void process(String data) {
+	public String process(String data) {
 		System.out.println("Hello World");
+		return "COMPLETED";
 	}
 
 	

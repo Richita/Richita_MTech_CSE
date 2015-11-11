@@ -11,7 +11,7 @@ import com.microkernel.core.ProcessExecutor;
 import com.microkernel.core.flow.Flow;
 public class ProcessFlowExecutor implements ProcessExecutor,Lifecycle{
 
-	ExecutorService executor = Executors.newFixedThreadPool(8);
+	ExecutorService executor = Executors.newFixedThreadPool(1);
 	
 	@Override
 	public void execute(final Object request, final Flow flow) {

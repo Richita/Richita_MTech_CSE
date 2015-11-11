@@ -1,5 +1,6 @@
 package com.microkernel.core.state;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -23,18 +24,19 @@ public class SequentialState extends AbstractState {
 	@Override
 	public void handle(Object request,ServiceExecutor executor) {
 		List<Service<?>> services = getServices();
-
+		List<String> exitStatus = new ArrayList<String>();
 		for(Service service : services){
-			Future<?> executeService = executor.executeService(service,request);
-			/*try {
-				Object object = executeService.get();
-				if(object != null)
-					break;
+			Future<String> executeService = executor.executeService(service,request);
+			try {
+				String result = executeService.get();
+				if(null != result){
+					exitStatus.add(result);
+				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (ExecutionException e) {
 				e.printStackTrace();
-			}*/
+			}
 		}
 
 	}

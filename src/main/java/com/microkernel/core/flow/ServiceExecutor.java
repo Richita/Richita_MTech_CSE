@@ -6,6 +6,6 @@ import com.microkernel.core.Service;
 
 public interface ServiceExecutor {
 
-	Future<?> executeService(Service<? super Object> service,Object request);
+	Future<String> executeService(Service<? super Object> service,Object request);
 	
 }

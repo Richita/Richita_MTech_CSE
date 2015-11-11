@@ -47,9 +47,19 @@
 		class="com.microkernel.core.orchestrator.ProcessFlowExecutor"></bean>
 	
 	<bean id="serviceExecutor"
-		class="com.microkernel.core.task.executor.AsyncServiceExecutor" />
+		class="com.microkernel.core.task.executor.AsyncServiceExecutor">
+		<property name="task" ref="executor" />	
+	</bean>
 	
 	<!-- PARSER Beans -->
+	
+	<bean id="executor"
+		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="maxPoolSize" value="10" />
+		<property name="queueCapacity" value="10" />
+		<property name="corePoolSize" value="10" />
+		<property name="threadNamePrefix" value="SERV-" />	
+	</bean>
 	
 	<bean id="processDefParser" 
 		class="com.microkernel.core.xml.configuration.MicrokernelProcessDefinitionParser">

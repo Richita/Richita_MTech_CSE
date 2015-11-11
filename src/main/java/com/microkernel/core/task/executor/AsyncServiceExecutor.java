@@ -1,5 +1,6 @@
 package com.microkernel.core.task.executor;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
@@ -15,30 +16,27 @@ public class AsyncServiceExecutor implements ServiceExecutor,RejectedExecutionHa
 	private ThreadPoolTaskExecutor task = new ThreadPoolTaskExecutor();
 	
 	
+	
+	public ThreadPoolTaskExecutor getTask() {
+		return task;
+	}
+
+	public void setTask(ThreadPoolTaskExecutor task) {
+		this.task = task;
+	}
+
 	public AsyncServiceExecutor() {
-		task.setCorePoolSize(Runtime.getRuntime().availableProcessors()+1);
-		task.setKeepAliveSeconds(40000);
-		task.setMaxPoolSize(20);
-		task.setThreadFactory(new ThreadFactory() {
-			
-			@Override
-			public Thread newThread(Runnable r) {
-				Thread t = new Thread("Service Thread");
-				return t;
-			}
-		});
-		task.setRejectedExecutionHandler(this);
-		task.afterPropertiesSet();
+		
 	}
 	
 	@Override
-	public Future<?> executeService(final Service<? super Object> service,final Object request) {
-		service.process(request);
-		Future<?> submit = task.submit(new Runnable() {
-			
+	public Future<String> executeService(final Service<? super Object> service,final Object request) {
+		Future<String> submit = task.submit(new Callable<String>() {
+
 			@Override
-			public void run() {
-				service.process(request);
+			public String call() throws Exception {
+				String result = service.process(request);
+				return result;
 			}
 		});
 		return submit;

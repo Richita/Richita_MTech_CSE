@@ -11,6 +11,6 @@ public interface Service<T> {
 
 	String getName();
 	
-	void process(T data);
+	String process(T data);
 	
 }
