@@ -7,6 +7,6 @@ public interface Orchestrator {
 	
 	FlowHolder getFlowHolder();
 	
-	Object process(Object request,String flowName);
+	void process(Object request,String flowName,CallBack callback);
 	
 }

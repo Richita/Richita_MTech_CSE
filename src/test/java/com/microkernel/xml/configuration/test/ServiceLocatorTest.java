@@ -35,7 +35,7 @@ public class ServiceLocatorTest {
 	public void test() {
 		
 		Service<?> service = this.serviceLocator.getService("HelloWorld");
-		service.process(null);
+//		service.process();
 		
 	}
 

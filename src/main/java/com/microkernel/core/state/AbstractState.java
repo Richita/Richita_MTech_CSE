@@ -6,6 +6,7 @@ package com.microkernel.core.state;
 import java.util.List;
 
 import com.microkernel.core.Service;
+import com.microkernel.core.ServiceContext;
 import com.microkernel.core.flow.ServiceExecutor;
 import com.microkernel.core.flow.State;
 
@@ -32,7 +33,7 @@ public abstract class AbstractState implements State {
 		return this.name;
 	}
 
-	public abstract void handle(Object request,ServiceExecutor executor);
+	public abstract void handle(ServiceExecutor executor,ServiceContext context);
 
 	public void setServices(List<Service<?>> services){this.services = services;}
 

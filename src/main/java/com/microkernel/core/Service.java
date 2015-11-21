@@ -11,6 +11,6 @@ public interface Service<T> {
 
 	String getName();
 	
-	void process(T data);
+	void process(final T data,final ServiceContext context)throws Exception;
 	
 }

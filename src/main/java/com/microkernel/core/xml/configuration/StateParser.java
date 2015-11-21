@@ -53,6 +53,8 @@ public class StateParser implements Parser<StateTransition>{
         String executorId = element.getAttribute(ATTR_ID);
         String type = element.getAttribute(ATTR_TYPE);
         String next = element.getAttribute(ATTR_NEXT);
+        NodeList list = element.getElementsByTagName("next");
+        
 
         if("".equalsIgnoreCase(next)) next = null;
 

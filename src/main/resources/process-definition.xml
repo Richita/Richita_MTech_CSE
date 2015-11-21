@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <microkernel>
 	<flow id="AAIS">
-		<state id="service1" type="sequential" next="service2">
+		<state id="service1" type="parallel" next="service2">
 			<service ref="HelloWorld" />
 			<service ref="HelloWorld" />
 		</state>
-		<state id="service2" type="sequential">
+		<state id="service2" type="parallel">
 			<service ref="HelloWorld" />
 			<service ref="HelloWorld" />
 		</state>

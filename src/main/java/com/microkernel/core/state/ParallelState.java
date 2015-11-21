@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import com.microkernel.core.Service;
+import com.microkernel.core.ServiceContext;
 import com.microkernel.core.flow.ServiceExecutor;
 
 /**
@@ -21,13 +22,13 @@ public class ParallelState extends AbstractState {
     }
 
 
-    public void handle(final Object request,final ServiceExecutor executor) {
+    public void handle(final ServiceExecutor executor,final ServiceContext context) {
 
         Collection<Future<?>> tasks = new ArrayList<Future<?>>();
         List<Service<?>> services = getServices();
 
         for (final Service service : services) {
-            Future<?> task = executor.executeService(service, request);
+            Future<?> task = executor.executeService(service, context);
 
             tasks.add(task);
 
