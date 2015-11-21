@@ -1,6 +1,7 @@
 package com.dummy.service;
 
 import com.microkernel.core.Service;
+import com.microkernel.core.ServiceContext;
 
 public class HelloWorldService implements Service<String>{
 
@@ -14,9 +15,12 @@ public class HelloWorldService implements Service<String>{
 		this.name = name;
 	}
 
-	public String process(String data) {
+	
+
+	@Override
+	public void process(String data, ServiceContext context) throws Exception {
 		System.out.println("Hello World");
-		return "COMPLETED";
+		
 	}
 
 	
