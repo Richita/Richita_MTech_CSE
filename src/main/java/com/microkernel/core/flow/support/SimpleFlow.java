@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.microkernel.core.Service;
+import com.microkernel.core.ServiceContext;
 import com.microkernel.core.flow.Flow;
 import com.microkernel.core.flow.FlowExecutionStatus;
 import com.microkernel.core.flow.ServiceExecutor;
@@ -104,13 +105,16 @@ public class SimpleFlow implements Flow {
 		return this.stateMap.values();
 	}
 
-	public void start(Object request) {
+	public void start(ServiceContext context) {
 		State state = this.startState;
 		FlowExecutionStatus status  = FlowExecutionStatus.STARTED;
 		
+		
+		
+		
 		while(isFlowContinue(state,status)){
 			
-			state.handle(request,executor);
+			state.handle(executor,context);
 			
 			
 			state = doNext(state,status);

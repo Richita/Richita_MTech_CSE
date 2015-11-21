@@ -18,8 +18,9 @@ public class HelloWorldService implements Service<String>{
 	
 
 	@Override
-	public void process(String data, ServiceContext context) throws Exception {
+	public void process(final String data,final ServiceContext context) throws Exception {
 		System.out.println("Hello World");
+		context.setResponse("Data Sent Back");
 		
 	}
 

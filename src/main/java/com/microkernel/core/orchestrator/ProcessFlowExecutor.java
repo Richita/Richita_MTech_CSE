@@ -1,54 +1,73 @@
 package com.microkernel.core.orchestrator;
 
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
-import org.springframework.context.Lifecycle;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import com.microkernel.core.CallBack;
 import com.microkernel.core.ProcessExecutor;
+import com.microkernel.core.ServiceContext;
 import com.microkernel.core.flow.Flow;
-public class ProcessFlowExecutor implements ProcessExecutor,Lifecycle{
+public class ProcessFlowExecutor implements ProcessExecutor,ApplicationListener<ContextClosedEvent>{
 
-	ExecutorService executor = Executors.newFixedThreadPool(1);
+	private ThreadPoolTaskExecutor executor;
+	private ThreadLocal<ServiceContext> contexts = new ThreadLocal<ServiceContext>();
 	
 	@Override
-	public void execute(final Object request, final Flow flow) {
+	public void execute(final Object request, final Flow flow,CallBack callback) {
+		final ServiceContext ctx = (null == contexts.get()) ? new ServiceContext() : contexts.get();
+		if(null == ctx.getRequest()){
+			contexts.set(ctx);
+		}
+		else
+			ctx.clear();
+		
+		ctx.setRequest(request);
+		
 		FutureTask<Void> task = new FutureTask<Void>(new Runnable() {
 			
 			@Override
 			public void run() {
-				flow.start(request);
+				flow.start(ctx);
 			}
 		},null);
 		
 		
-		executor.execute(task);
+		getExecutor().execute(task);
 		
 		try {
-			task.get();
+			Void void1 = task.get();
+			Object response = ctx.getResponse();
+			
+			if(null == response){
+				callback.onError(new NullPointerException("There was no Response recieved from any service"));
+			}
+			
+			callback.onResponse(response);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			callback.onError(e);
 		} catch (ExecutionException e) {
-			e.printStackTrace();
+			callback.onError(e);
 		} 
 		
 	}
 
-	@Override
-	public boolean isRunning() {
-		return true; // TODO for time being
+	
+	public ThreadPoolTaskExecutor getExecutor() {
+		return executor;
+	}
+
+	public void setExecutor(ThreadPoolTaskExecutor executor) {
+		this.executor = executor;
 	}
 
 	@Override
-	public void start() {
-		
-	}
-
-	@Override
-	public void stop() {
-		this.executor.shutdown();
+	public void onApplicationEvent(ContextClosedEvent event) {
+		this.getExecutor().shutdown();
 	}
 
 }

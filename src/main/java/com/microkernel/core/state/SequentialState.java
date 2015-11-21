@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import com.microkernel.core.Service;
+import com.microkernel.core.ServiceContext;
 import com.microkernel.core.flow.FlowExecutionStatus;
 import com.microkernel.core.flow.ServiceExecutor;
 
@@ -22,11 +23,11 @@ public class SequentialState extends AbstractState {
 
 
 	@Override
-	public void handle(Object request,ServiceExecutor executor) {
+	public void handle(ServiceExecutor executor,ServiceContext context) {
 		List<Service<?>> services = getServices();
 		List<String> exitStatus = new ArrayList<String>();
 		for(Service service : services){
-			Future<String> executeService = executor.executeService(service,request);
+			Future<String> executeService = executor.executeService(service,context);
 			try {
 				String result = executeService.get();
 				if(null != result){

@@ -44,16 +44,26 @@
 	</bean>
 	
 	<bean id="processExecutor"
-		class="com.microkernel.core.orchestrator.ProcessFlowExecutor"></bean>
+		class="com.microkernel.core.orchestrator.ProcessFlowExecutor">
+		<property name="executor" ref="executorProc" />	
+	</bean>
 	
 	<bean id="serviceExecutor"
 		class="com.microkernel.core.task.executor.AsyncServiceExecutor">
-		<property name="task" ref="executor" />	
+		<property name="task" ref="executorServ" />	
 	</bean>
 	
 	<!-- PARSER Beans -->
 	
-	<bean id="executor"
+	<bean id="executorProc"
+		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="maxPoolSize" value="10" />
+		<property name="queueCapacity" value="10" />
+		<property name="corePoolSize" value="10" />
+		<property name="threadNamePrefix" value="PROC-" />	
+	</bean>
+	
+	<bean id="executorServ"
 		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
 		<property name="maxPoolSize" value="10" />
 		<property name="queueCapacity" value="10" />
@@ -81,5 +91,8 @@
 		class="com.microkernel.core.xml.configuration.ServiceParser" depends-on="serviceLocator">
 		<property name="serviceLocator" ref="serviceLocator" />	
 	</bean>
+	
+	<bean id="springInit"
+		class="com.microkernel.core.spring.bean.SpringConfiguration"></bean>
 	
 </beans>

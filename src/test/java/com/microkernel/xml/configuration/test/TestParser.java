@@ -15,6 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.xml.sax.SAXException;
 
+import com.microkernel.core.CallBack;
 import com.microkernel.core.Orchestrator;
 import com.microkernel.core.flow.FlowHolder;
 import com.microkernel.core.xml.ProcessDefinitionParser;
@@ -26,42 +27,70 @@ import jdk.nashorn.internal.ir.annotations.Ignore;
  * Created by NinadIngole on 9/15/2015.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath:applicationContext.xml"})
-public class TestParser implements ApplicationContextAware{
+@ContextConfiguration({ "classpath:applicationContext.xml" })
+public class TestParser implements ApplicationContextAware {
 
-	
 	@Autowired
 	ApplicationContext appContext;
-	
-	
-	
-    public ApplicationContext getApplicationContext() {
+
+	public ApplicationContext getApplicationContext() {
 		return appContext;
 	}
-
-
 
 	public void setApplicationContext(ApplicationContext appContext) {
 		this.appContext = appContext;
 	}
 
-
-
 	@Test
 	@Ignore
-    public void testParsing() throws ParserConfigurationException, IOException, SAXException {
-    	ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
-		Orchestrator bean = ctx.getBean(Orchestrator.class);
-		bean.process("Hello World", "AAIS");
-    	
-    
-     
-    }
-	
-	public static void main(String... args){
+	public void testParsing() throws ParserConfigurationException, IOException, SAXException {
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
 		Orchestrator bean = ctx.getBean(Orchestrator.class);
-		bean.process("Hello World", "AAIS");
-    	
+		
+	}
+
+	public static void main(String... args) {
+		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+		ctx.registerShutdownHook();
+		final Orchestrator bean = ctx.getBean(Orchestrator.class);
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				bean.process("Hello World", "AAIS",new CallBack() {
+					
+					@Override
+					public void onResponse(Object response) {
+						System.out.println(response);
+					}
+					
+					@Override
+					public void onError(Throwable t) {
+						System.out.println(t);
+					}
+				});
+				
+			}
+		}).start();
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				bean.process("Hello", "AAIS",new CallBack() {
+					
+					@Override
+					public void onResponse(Object response) {
+						System.out.println(response);
+					}
+					
+					@Override
+					public void onError(Throwable t) {
+						System.out.println(t);
+					}
+				});
+
+			}
+		}).start();
+		ctx.close();
 	}
 }

@@ -1,7 +1,10 @@
 package com.microkernel.core.orchestrator;
 
+import java.util.HashMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.microkernel.core.CallBack;
 import com.microkernel.core.Orchestrator;
 import com.microkernel.core.ProcessExecutor;
 import com.microkernel.core.flow.Flow;
@@ -17,6 +20,7 @@ public class ProcessOrchestrator implements Orchestrator {
 	private FlowHolder holder;
 	
 	private ProcessExecutor executor;
+	
 	
 	
 	public FlowHolder getHolder() {
@@ -42,16 +46,14 @@ public class ProcessOrchestrator implements Orchestrator {
 	}
 
 	@Override
-	public Object process(Object request,String flowname) {
+	public void process(Object request,String flowname,CallBack callback) {
+		
 		
 		Flow flow = this.holder.getFlow(flowname);
 		
-		executor.execute(request, flow);
+		executor.execute(request, flow,callback);
 		
 		
-		
-//		request.g
-		return null;
 	}
 
 }
