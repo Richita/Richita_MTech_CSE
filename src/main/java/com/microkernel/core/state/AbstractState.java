@@ -9,6 +9,7 @@ import com.microkernel.core.Service;
 import com.microkernel.core.ServiceContext;
 import com.microkernel.core.flow.ServiceExecutor;
 import com.microkernel.core.flow.State;
+import com.microkernel.core.flow.StateExecutionStatus;
 
 /**
  * @author NinadIngole
@@ -33,7 +34,7 @@ public abstract class AbstractState implements State {
 		return this.name;
 	}
 
-	public abstract void handle(ServiceExecutor executor,ServiceContext context);
+	public abstract StateExecutionStatus handle(ServiceExecutor executor,ServiceContext context);
 
 	public void setServices(List<Service<?>> services){this.services = services;}
 

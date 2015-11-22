@@ -9,6 +9,7 @@ import com.microkernel.core.Service;
 import com.microkernel.core.ServiceContext;
 import com.microkernel.core.flow.FlowExecutionStatus;
 import com.microkernel.core.flow.ServiceExecutor;
+import com.microkernel.core.flow.StateExecutionStatus;
 
 public class SequentialState extends AbstractState {
 
@@ -23,7 +24,9 @@ public class SequentialState extends AbstractState {
 
 
 	@Override
-	public void handle(ServiceExecutor executor,ServiceContext context) {
+	public StateExecutionStatus handle(ServiceExecutor executor,ServiceContext context) {
+    	StateExecutionStatus status = StateExecutionStatus.UNKNOWN;
+
 		List<Service<?>> services = getServices();
 		List<String> exitStatus = new ArrayList<String>();
 		for(Service service : services){
@@ -33,12 +36,20 @@ public class SequentialState extends AbstractState {
 				if(null != result){
 					exitStatus.add(result);
 				}
+                status = StateExecutionStatus.COMPLETED;
+
 			} catch (InterruptedException e) {
+            	status = StateExecutionStatus.FAILED;
+            	// LOG Exceptions
 				e.printStackTrace();
 			} catch (ExecutionException e) {
+            	status = StateExecutionStatus.FAILED;
+            	// Log Exceptions
 				e.printStackTrace();
 			}
 		}
+		
+		return status;
 
 	}
 	

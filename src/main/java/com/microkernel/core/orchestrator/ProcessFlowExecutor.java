@@ -12,51 +12,50 @@ import com.microkernel.core.CallBack;
 import com.microkernel.core.ProcessExecutor;
 import com.microkernel.core.ServiceContext;
 import com.microkernel.core.flow.Flow;
-public class ProcessFlowExecutor implements ProcessExecutor,ApplicationListener<ContextClosedEvent>{
+
+public class ProcessFlowExecutor implements ProcessExecutor, ApplicationListener<ContextClosedEvent> {
 
 	private ThreadPoolTaskExecutor executor;
-	private ThreadLocal<ServiceContext> contexts = new ThreadLocal<ServiceContext>();
-	
-	@Override
-	public void execute(final Object request, final Flow flow,CallBack callback) {
-		final ServiceContext ctx = (null == contexts.get()) ? new ServiceContext() : contexts.get();
-		if(null == ctx.getRequest()){
-			contexts.set(ctx);
+	private ThreadLocal<ServiceContext> contexts = new ThreadLocal<ServiceContext>() {
+		@Override
+		protected ServiceContext initialValue() {
+			return new ServiceContext();
 		}
-		else
-			ctx.clear();
-		
+	};
+
+	@Override
+	public void execute(final Object request, final Flow flow, CallBack callback) {
+		final ServiceContext ctx = contexts.get();
+		ctx.clear();
 		ctx.setRequest(request);
-		
+
 		FutureTask<Void> task = new FutureTask<Void>(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				flow.start(ctx);
 			}
-		},null);
-		
-		
+		}, null);
+
 		getExecutor().execute(task);
-		
+
 		try {
 			Void void1 = task.get();
 			Object response = ctx.getResponse();
-			
-			if(null == response){
+
+			if (null == response) {
 				callback.onError(new NullPointerException("There was no Response recieved from any service"));
 			}
-			
+
 			callback.onResponse(response);
 		} catch (InterruptedException e) {
 			callback.onError(e);
 		} catch (ExecutionException e) {
 			callback.onError(e);
-		} 
-		
+		}
+
 	}
 
-	
 	public ThreadPoolTaskExecutor getExecutor() {
 		return executor;
 	}

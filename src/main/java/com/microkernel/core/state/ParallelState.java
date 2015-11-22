@@ -9,6 +9,7 @@ import java.util.concurrent.Future;
 import com.microkernel.core.Service;
 import com.microkernel.core.ServiceContext;
 import com.microkernel.core.flow.ServiceExecutor;
+import com.microkernel.core.flow.StateExecutionStatus;
 
 /**
  * Created by NinadIngole on 9/14/2015.
@@ -22,8 +23,8 @@ public class ParallelState extends AbstractState {
     }
 
 
-    public void handle(final ServiceExecutor executor,final ServiceContext context) {
-
+    public StateExecutionStatus handle(final ServiceExecutor executor,final ServiceContext context) {
+    	StateExecutionStatus status = StateExecutionStatus.UNKNOWN;
         Collection<Future<?>> tasks = new ArrayList<Future<?>>();
         List<Service<?>> services = getServices();
 
@@ -35,20 +36,24 @@ public class ParallelState extends AbstractState {
             
 
         }
-            Collection<Object> results = new ArrayList();
+            Collection<Object> results = new ArrayList<Object>();
 
             for (Future<?> task1 : tasks) {
                 try {
                     results.add((Object)task1.get());
+                    status = StateExecutionStatus.COMPLETED;
                 } catch (ExecutionException e) {
-                    e.printStackTrace();
+                	status = StateExecutionStatus.FAILED;
+                    // LOG Exception
+                	e.printStackTrace();
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                	status = StateExecutionStatus.FAILED;
+                    //LOG Exception
+                	e.printStackTrace();
                 }
             }
 
-
-
+            return status;
 
     }
 

@@ -1,6 +1,7 @@
 package com.microkernel.xml.configuration.test;
 
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -53,6 +54,7 @@ public class TestParser implements ApplicationContextAware {
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
 		ctx.registerShutdownHook();
 		final Orchestrator bean = ctx.getBean(Orchestrator.class);
+		final CountDownLatch latch = new CountDownLatch(2);
 		new Thread(new Runnable() {
 
 			@Override
@@ -61,11 +63,13 @@ public class TestParser implements ApplicationContextAware {
 					
 					@Override
 					public void onResponse(Object response) {
+						latch.countDown();
 						System.out.println(response);
 					}
 					
 					@Override
 					public void onError(Throwable t) {
+						latch.countDown();
 						System.out.println(t);
 					}
 				});
@@ -80,17 +84,26 @@ public class TestParser implements ApplicationContextAware {
 					
 					@Override
 					public void onResponse(Object response) {
+						latch.countDown();
 						System.out.println(response);
 					}
 					
 					@Override
 					public void onError(Throwable t) {
+						latch.countDown();
 						System.out.println(t);
 					}
 				});
 
 			}
 		}).start();
-		ctx.close();
+		try {
+			latch.await();
+			ctx.close();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }

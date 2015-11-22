@@ -13,6 +13,7 @@ import com.microkernel.core.flow.Flow;
 import com.microkernel.core.flow.FlowExecutionStatus;
 import com.microkernel.core.flow.ServiceExecutor;
 import com.microkernel.core.flow.State;
+import com.microkernel.core.flow.StateExecutionStatus;
 
 public class SimpleFlow implements Flow {
 
@@ -107,16 +108,12 @@ public class SimpleFlow implements Flow {
 
 	public void start(ServiceContext context) {
 		State state = this.startState;
-		FlowExecutionStatus status  = FlowExecutionStatus.STARTED;
-		
+		StateExecutionStatus status = StateExecutionStatus.UNKNOWN;
 		
 		
 		
 		while(isFlowContinue(state,status)){
-			
-			state.handle(executor,context);
-			
-			
+			status = state.handle(executor,context);
 			state = doNext(state,status);
 		}
 		
@@ -124,7 +121,7 @@ public class SimpleFlow implements Flow {
 		
 	}
 
-	private State doNext(State state, FlowExecutionStatus status) {
+	private State doNext(State state, StateExecutionStatus status) {
 		Set<StateTransition> set = this.transitionMap.get(state.getName());
 		for(StateTransition transition: set)
 		{
@@ -136,8 +133,8 @@ public class SimpleFlow implements Flow {
 		return null;
 	}
 
-	private boolean isFlowContinue(State state, FlowExecutionStatus status) {
-		if(null == state || FlowExecutionStatus.FAILED.equals(status))
+	private boolean isFlowContinue(State state, StateExecutionStatus status) {
+		if(null == state || status.isFail() || status.isStop())
 			return false;
 		
 		return true;
