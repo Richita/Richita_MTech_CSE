@@ -14,10 +14,6 @@ public class SimpleServiceLocator implements ServiceLocator, Ordered,BeanPostPro
 	private HashMap<String, Service<?>> services = new HashMap<String, Service<?>>();
 	
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-		return bean;
-	}
-
-	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		Class<?> clazz = bean.getClass();
 		Class[] interfaces = clazz.getInterfaces();
 		
@@ -28,6 +24,11 @@ public class SimpleServiceLocator implements ServiceLocator, Ordered,BeanPostPro
 			}
 		}
 		
+		
+		return bean;
+	}
+
+	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		
 		return bean;
 	}

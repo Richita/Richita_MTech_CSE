@@ -7,16 +7,19 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.microkernel.core.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.microkernel.core.ServiceContext;
 import com.microkernel.core.flow.Flow;
-import com.microkernel.core.flow.FlowExecutionStatus;
 import com.microkernel.core.flow.ServiceExecutor;
 import com.microkernel.core.flow.State;
 import com.microkernel.core.flow.StateExecutionStatus;
 
 public class SimpleFlow implements Flow {
 
+	Logger log = LoggerFactory.getLogger(SimpleFlow.class);
+	
 	private final String name;
 	
 	private List<StateTransition> transitions = new ArrayList<StateTransition>();
@@ -113,6 +116,7 @@ public class SimpleFlow implements Flow {
 		
 		
 		while(isFlowContinue(state,status)){
+			log.info("Executing State = "+state.getName());
 			status = state.handle(executor,context);
 			state = doNext(state,status);
 		}
@@ -126,7 +130,7 @@ public class SimpleFlow implements Flow {
 		for(StateTransition transition: set)
 		{
 			String next = transition.getNext();
-			System.out.println(next);
+			log.info("Next State = "+next);
 			State state2 = stateMap.get(next);
 			return state2;
 		}
@@ -134,10 +138,18 @@ public class SimpleFlow implements Flow {
 	}
 
 	private boolean isFlowContinue(State state, StateExecutionStatus status) {
-		if(null == state || status.isFail() || status.isStop())
+		if(null == state || status.isFail() || status.isStop()) {
+			log.info("End");
 			return false;
-		
+		}
 		return true;
+	}
+
+
+
+	@Override
+	public String toString() {
+		return "SimpleFlow [name=" + name + ", transitionMap=" + transitionMap + "]";
 	}
 
 	
