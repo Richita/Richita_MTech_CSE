@@ -55,6 +55,7 @@ public class SimpleFlow implements Flow {
 
 
 	private void initiateTransitions() {
+		log.info("initiating transitions mappings");
 		startState = null;
 		transitionMap.clear();
 		stateMap.clear();
@@ -92,6 +93,7 @@ public class SimpleFlow implements Flow {
 			throw new IllegalArgumentException("No End State to the transition");
 		}
 		startState = transitions.get(0).getState();
+		log.info("flow "+name+" initiated...");
 	}
 
 	public String getName() {
@@ -130,7 +132,6 @@ public class SimpleFlow implements Flow {
 		for(StateTransition transition: set)
 		{
 			String next = transition.getNext();
-			log.info("Next State = "+next);
 			State state2 = stateMap.get(next);
 			return state2;
 		}
@@ -139,7 +140,7 @@ public class SimpleFlow implements Flow {
 
 	private boolean isFlowContinue(State state, StateExecutionStatus status) {
 		if(null == state || status.isFail() || status.isStop()) {
-			log.info("End");
+			log.info("End of flow "+name+".");
 			return false;
 		}
 		return true;

@@ -21,11 +21,10 @@
 	</bean>
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
-		<property name="url"
-			value="jdbc:derby://localhost:1527/weatherDB;create=true" />
-		<property name="driverClassName" value="org.apache.derby.jdbc.ClientDriver" />
-		<property name="username" value="user" />
-		<property name="password" value="pwd" />
+		<property name="url" value="jdbc:mysql://localhost:3306/weatherdb" />
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="username" value="root" />
+		<property name="password" value="monday99" />
 	</bean>
 	<bean id="hibernateSessionFactory"
 		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
@@ -37,7 +36,7 @@
 		</property>
 		<property name="hibernateProperties">
 			<props>
-				<prop key="hibernate.dialect">org.hibernate.dialect.DerbyDialect</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
 				<prop key="hibernate.current_session_context_class">thread</prop>
 				<prop key="hibernate.show_sql">false</prop>
 			</props>
@@ -49,6 +48,9 @@
 	<bean id="cityTempratureService" class="com.weather.service.TempratureService">
 		<property name="session" ref="hibernateSessionFactory" />
 	</bean>
+	<bean id="tempratureService" class="com.weather.service.SingleTempratureService">
+		<property name="session" ref="hibernateSessionFactory" />
+	</bean>
 	<bean id="helloWorldService" class="com.dummy.service.HelloWorldService">
 		<property name="name" value="HelloWorld" />
 	</bean>
@@ -56,6 +58,15 @@
 		class="com.microkernel.core.service.locator.SimpleServiceLocator">
 	</bean>
 
+	<bean id="fileWriter"
+			class="com.weather.service.FileWriter">
+		<property name="fileName" value="${FILE_NAME}" />
+	</bean>
+	
+	<bean id="dbWriter"
+		class="com.weather.service.DBWriter">
+		<property name="session" ref="hibernateSessionFactory" />	
+	</bean>
 
 
 

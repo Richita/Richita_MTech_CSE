@@ -1,6 +1,7 @@
 package com.weather.service;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,8 @@ import javax.xml.transform.stream.StreamSource;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import com.microkernel.core.Service;
 import com.microkernel.core.ServiceContext;
@@ -22,51 +25,41 @@ import com.weather.xml.NewDataSet.Table;
 import com.weather.xml1.CurrentWeather;
 
 public class TempratureService implements Service<String> {
-
+	private Logger log = LoggerFactory.getLogger(TempratureService.class);
 	private SessionFactory session;
+
 	
-	@Override
-	public String getName() {
-		
-		return "cityTempratureService";
-	}
 
 	@Override
 	public void process(String data, ServiceContext context) throws Exception {
-		
+
 		List<Table> cities = context.get("CITIES");
-		Map<String, CurrentWeather> weatherByCities = new HashMap<String, CurrentWeather>();
-		
+		ArrayList<CurrentWeather> allWeather = new ArrayList<CurrentWeather>();
+
 		GlobalWeather w = new GlobalWeather();
 		GlobalWeatherSoap soap = w.getGlobalWeatherSoap();
 		JAXBContext instance = JAXBContext.newInstance(CurrentWeather.class);
 		Unmarshaller umarshaller = instance.createUnmarshaller();
-		
-		for(Table t: cities) {
+
+		for (Table t : cities) {
 			String weather = soap.getWeather(t.getCity(), t.getCountry());
 			JAXBElement<CurrentWeather> weatherElement = null;
-			if(!weather.equalsIgnoreCase("data not found")) {
+			if (!weather.equalsIgnoreCase("data not found")) {
+				log.info("Data Not Found for City:"+t.getCity());
 				weatherElement = umarshaller.unmarshal(new StreamSource(new StringReader(weather)),
-					CurrentWeather.class);
+						CurrentWeather.class);
 			}
 			CurrentWeather currentWeather = null;
-			if(null != weatherElement)
-			{
+			log.info("Data Found for: "+t.getCity());
+			if (null != weatherElement) {
 				currentWeather = weatherElement.getValue();
 				currentWeather.setCity(t.getCity());
-				Session openSession = session.openSession();
-				Transaction transaction = openSession.beginTransaction();
-				openSession.persist(currentWeather);
-				transaction.commit();
-				openSession.close();
-
-				
+				allWeather.add(currentWeather);
 			}
-
-//			System.out.println(t.getCity()+" = "+currentWeather);
-			weatherByCities.put(t.getCity(), currentWeather);
 		}
-		context.setResponse("DONE");
+		
+		context.add("PERSIST_DATA", allWeather);
+
 	}
 
 	public SessionFactory getSession() {

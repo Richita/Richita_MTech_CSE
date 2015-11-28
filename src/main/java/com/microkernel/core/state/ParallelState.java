@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import org.slf4j.LoggerFactory;
+
+import org.slf4j.Logger;
+
 import com.microkernel.core.Service;
 import com.microkernel.core.ServiceContext;
 import com.microkernel.core.flow.ServiceExecutor;
@@ -16,7 +20,7 @@ import com.microkernel.core.flow.StateExecutionStatus;
  */
 public class ParallelState extends AbstractState {
 
-
+	private Logger log = LoggerFactory.getLogger(ParallelState.class);
    
     public ParallelState(String name, List<Service<?>> services) {
         super(name,services);
@@ -24,6 +28,7 @@ public class ParallelState extends AbstractState {
 
 
     public StateExecutionStatus handle(final ServiceExecutor executor,final ServiceContext context) {
+    	log.info("inside Parallel State handle()");
     	StateExecutionStatus status = StateExecutionStatus.UNKNOWN;
         Collection<Future<?>> tasks = new ArrayList<Future<?>>();
         List<Service<?>> services = getServices();
@@ -44,12 +49,10 @@ public class ParallelState extends AbstractState {
                     status = StateExecutionStatus.COMPLETED;
                 } catch (ExecutionException e) {
                 	status = StateExecutionStatus.FAILED;
-                    // LOG Exception
-                	e.printStackTrace();
+                	log.error(e.getMessage(),e);
                 } catch (InterruptedException e) {
                 	status = StateExecutionStatus.FAILED;
-                    //LOG Exception
-                	e.printStackTrace();
+                    log.error(e.getMessage(),e);
                 }
             }
 

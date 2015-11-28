@@ -19,6 +19,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 /**
  * <p>Java class for anonymous complex type.
@@ -60,7 +62,7 @@ import javax.xml.bind.annotation.XmlType;
     "status"
 })
 @XmlRootElement(name = "CurrentWeather")
-@Entity(name="APP.WEATHERDETAILS")
+@Entity(name="WEATHERDETAILS")
 public class CurrentWeather {
 
 	@Id
@@ -314,9 +316,12 @@ public class CurrentWeather {
 
 	@Override
 	public String toString() {
-		return "CurrentWeather [location=" + location + ", time=" + time + ", wind=" + wind + ", visibility="
+		/*String str = city+" :{ location: "+location+", time=" + time + ", wind=" + wind + ", visibility="
 				+ visibility + ", temperature=" + temperature + ", dewPoint=" + dewPoint + ", relativeHumidity="
-				+ relativeHumidity + ", pressure=" + pressure + ", status=" + status + "]";
+				+ relativeHumidity + ", pressure=" + pressure + ", status=" + status + "}"+System.lineSeparator();*/
+		String str = city+","+location.replace(",", "-")+","+time.replace(",", " ")+","+wind+","+visibility+","+temperature+","+dewPoint+","+relativeHumidity+","+
+				pressure+","+status+System.lineSeparator();
+		return str;
 	}
 
 	public String getCity() {

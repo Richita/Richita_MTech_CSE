@@ -9,7 +9,6 @@ package com.microkernel.core;
  */
 public interface Service<T> {
 
-	String getName();
 	
 	void process(final T data,final ServiceContext context)throws Exception;
 	

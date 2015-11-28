@@ -9,6 +9,9 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.microkernel.core.Service;
 import com.microkernel.core.ServiceContext;
 import com.weather.api.GlobalWeather;
@@ -19,12 +22,9 @@ import com.weather.xml1.CurrentWeather;
 
 public class CountryCityService implements Service<String> {
 
-	@Override
-	public String getName() {
-		
-		return "countryCityService";
-	}
-
+	private Logger log = LoggerFactory.getLogger(CountryCityService.class);
+	
+	
 	@Override
 	public void process(String countryName, ServiceContext context) throws Exception {
 		
@@ -36,9 +36,9 @@ public class CountryCityService implements Service<String> {
 		Unmarshaller um = instance.createUnmarshaller();
 		JAXBElement<NewDataSet> parsedOutput = um.unmarshal(new StreamSource(new StringReader(citiesByCountry)),NewDataSet.class);
 		List<Table> table = parsedOutput.getValue().getTable();
-		
+		log.info("Found "+table.size()+" cities for country "+countryName);
 		context.add("CITIES", table);
-		
+		context.setResponse(table);
 		
 	}
 

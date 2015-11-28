@@ -73,10 +73,12 @@ public class StateParser implements Parser<StateTransition>{
         }
 
         if(SEQUENTIAL.equalsIgnoreCase(type)){
+        	log.info("Sequential State :"+executorId);
             return StateTransition.createStateTransition(new SequentialState(executorId,services),"*",next);
         }
 
         if(PARALLEL.equalsIgnoreCase(type)){
+        	log.info("Parallel State :"+executorId);
             return StateTransition.createStateTransition(new ParallelState(executorId,services),"*",next);
         }
 

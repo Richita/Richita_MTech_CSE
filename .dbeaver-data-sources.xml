@@ -14,5 +14,17 @@
 			</network-handler>
 			<bootstrap/>
 		</connection>
+		<virtual-meta-data>
+			<container name="model">
+				<container name="APP">
+					<entity name="WEATHERDETAILS">
+						<constraint name="PRIMARY" type="VIRTUAL KEY">
+							<attribute name="CITY"/>
+						</constraint>
+					</entity>
+				</container>
+			</container>
+		</virtual-meta-data>
+		<custom-property name="resultset.edit.key.use_all_columns" value="false"/>
 	</data-source>
 </data-sources>

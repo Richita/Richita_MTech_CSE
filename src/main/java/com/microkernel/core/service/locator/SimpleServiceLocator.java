@@ -20,7 +20,7 @@ public class SimpleServiceLocator implements ServiceLocator, Ordered,BeanPostPro
 		for(Class interfaze : interfaces){
 			if(interfaze == Service.class){
 				Service<?> service = (Service) bean;
-				putService(service.getName(), service);
+				putService(beanName, service);
 			}
 		}
 		
