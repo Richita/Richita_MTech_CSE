@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!-- Generated using Flame-Ware Solutions XML-2-XSD v2.0 at http://www.flame-ware.com/Products/XML-2-XSD/ -->
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="CurrentWeather">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Location" type="xs:string" minOccurs="0" />
+        <xs:element name="Time" type="xs:string" minOccurs="0" />
+        <xs:element name="Wind" type="xs:string" minOccurs="0" />
+        <xs:element name="Visibility" type="xs:string" minOccurs="0" />
+        <xs:element name="Temperature" type="xs:string" minOccurs="0" />
+        <xs:element name="DewPoint" type="xs:string" minOccurs="0" />
+        <xs:element name="RelativeHumidity" type="xs:string" minOccurs="0" />
+        <xs:element name="Pressure" type="xs:string" minOccurs="0" />
+        <xs:element name="Status" type="xs:string" minOccurs="0" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="CurrentWeather" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

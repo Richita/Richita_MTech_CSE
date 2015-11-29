@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -20,6 +22,8 @@ import com.microkernel.core.xml.Parser;
  */
 public class StateParser implements Parser<StateTransition>{
     
+	private Logger log = LoggerFactory.getLogger(StateParser.class);
+	
 	Parser<Service<?>> parser;
 	
 	
@@ -55,9 +59,11 @@ public class StateParser implements Parser<StateTransition>{
         String next = element.getAttribute(ATTR_NEXT);
         NodeList list = element.getElementsByTagName("next");
         
+        log.info("Parsing State : "+ executorId);
 
         if("".equalsIgnoreCase(next)) next = null;
-
+        if("".equalsIgnoreCase(type)) type = SEQUENTIAL;
+        
         NodeList serviceElement = element.getElementsByTagName("service");
 
         List<Service<?>> services = new ArrayList<Service<?>>();
@@ -67,10 +73,12 @@ public class StateParser implements Parser<StateTransition>{
         }
 
         if(SEQUENTIAL.equalsIgnoreCase(type)){
+        	log.info("Sequential State :"+executorId);
             return StateTransition.createStateTransition(new SequentialState(executorId,services),"*",next);
         }
 
         if(PARALLEL.equalsIgnoreCase(type)){
+        	log.info("Parallel State :"+executorId);
             return StateTransition.createStateTransition(new ParallelState(executorId,services),"*",next);
         }
 

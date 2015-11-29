@@ -14,7 +14,7 @@ public interface State {
 
 	List<Service<?>> getServices();
 
-	void handle(ServiceExecutor executor,ServiceContext context);
+	StateExecutionStatus handle(ServiceExecutor executor,ServiceContext context);
 	
 	boolean isEndState();
 }

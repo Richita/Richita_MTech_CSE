@@ -13,6 +13,10 @@ import com.microkernel.core.util.Assert;
  * @author NinadIngole
  * @version 1.0
  */
+/**
+ * @author NinadIngole
+ *
+ */
 public final class StateTransition {
 
 	private final State state;
@@ -52,5 +56,11 @@ public final class StateTransition {
 	public static StateTransition createEndStateTransition(State state,String pattern){
 		return createStateTransition(state,pattern,null);
 	}
+
+	@Override
+	public String toString() {
+		return "StateTransition [state=" + state + ", pattern=" + pattern + ", next=" + next + "]";
+	}
+	
 	
 }

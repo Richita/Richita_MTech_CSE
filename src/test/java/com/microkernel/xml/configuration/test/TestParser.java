@@ -1,6 +1,8 @@
 package com.microkernel.xml.configuration.test;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -20,6 +22,7 @@ import com.microkernel.core.Orchestrator;
 import com.microkernel.core.flow.FlowHolder;
 import com.microkernel.core.xml.ProcessDefinitionParser;
 import com.microkernel.core.xml.configuration.MicrokernelProcessDefinitionParser;
+import com.weather.xml.NewDataSet.Table;
 
 import jdk.nashorn.internal.ir.annotations.Ignore;
 
@@ -44,7 +47,7 @@ public class TestParser implements ApplicationContextAware {
 	@Test
 	@Ignore
 	public void testParsing() throws ParserConfigurationException, IOException, SAXException {
-		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("com/microkernel/core/applicationContext.xml");
 		Orchestrator bean = ctx.getBean(Orchestrator.class);
 		
 	}
@@ -53,44 +56,36 @@ public class TestParser implements ApplicationContextAware {
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
 		ctx.registerShutdownHook();
 		final Orchestrator bean = ctx.getBean(Orchestrator.class);
+		final CountDownLatch latch = new CountDownLatch(1);
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				bean.process("Hello World", "AAIS",new CallBack() {
+				bean.process("India", "QueryCities",new CallBack() {
 					
 					@Override
 					public void onResponse(Object response) {
-						System.out.println(response);
+						latch.countDown();
+						System.out.println("DONE");
 					}
 					
 					@Override
 					public void onError(Throwable t) {
+						latch.countDown();
 						System.out.println(t);
 					}
 				});
 				
 			}
 		}).start();
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				bean.process("Hello", "AAIS",new CallBack() {
-					
-					@Override
-					public void onResponse(Object response) {
-						System.out.println(response);
-					}
-					
-					@Override
-					public void onError(Throwable t) {
-						System.out.println(t);
-					}
-				});
-
-			}
-		}).start();
-		ctx.close();
+		
+		try {
+			latch.await();
+			ctx.close();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }

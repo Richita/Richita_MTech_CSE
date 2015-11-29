@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data-sources>
+	<data-source id="derby_server-1512fb06e05-5fd5b59a0bfbedc0" provider="generic" driver="derby_server" name="Derby - weatherDB" create-date="1448204114320" save-password="true" show-system-objects="true" read-only="false">
+		<connection host="localhost" port="1527" server="" database="weatherDB" url="jdbc:derby://localhost:1527/weatherDB;create=false" user="user" password="AxMCQKA=" type="dev">
+			<network-handler type="TUNNEL" id="ssh_tunnel" enabled="false" user="" save-password="false">
+				<property name="port" value="22"/>
+				<property name="keyPath" value=""/>
+				<property name="host" value=""/>
+				<property name="authType" value="PASSWORD"/>
+			</network-handler>
+			<network-handler type="PROXY" id="socks_proxy" enabled="false" user="" save-password="false">
+				<property name="socks-host" value=""/>
+				<property name="socks-port" value="1080"/>
+			</network-handler>
+			<bootstrap/>
+		</connection>
+		<virtual-meta-data>
+			<container name="model">
+				<container name="APP">
+					<entity name="WEATHERDETAILS">
+						<constraint name="PRIMARY" type="VIRTUAL KEY">
+							<attribute name="CITY"/>
+						</constraint>
+					</entity>
+				</container>
+			</container>
+		</virtual-meta-data>
+		<custom-property name="resultset.edit.key.use_all_columns" value="false"/>
+	</data-source>
+</data-sources>

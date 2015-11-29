@@ -3,6 +3,8 @@ package com.microkernel.core.xml.configuration;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -14,7 +16,7 @@ import com.microkernel.core.flow.support.StateTransition;
 import com.microkernel.core.xml.Parser;
 
 public class FlowParser implements Parser<Flow> {
-
+	private Logger log = LoggerFactory.getLogger(FlowParser.class);
 	@Autowired
 	Parser<StateTransition> parser;
 	
@@ -56,6 +58,7 @@ public class FlowParser implements Parser<Flow> {
 				stateTransitions.add(transition);
 		}
 		SimpleFlow flow = new SimpleFlow(flowName,stateTransitions);
+		log.info(flow.toString());
 		flow.setExecutor(executor);
 		return flow;
 	}

@@ -6,24 +6,30 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import org.slf4j.LoggerFactory;
+
+import org.slf4j.Logger;
+
 import com.microkernel.core.Service;
 import com.microkernel.core.ServiceContext;
 import com.microkernel.core.flow.ServiceExecutor;
+import com.microkernel.core.flow.StateExecutionStatus;
 
 /**
  * Created by NinadIngole on 9/14/2015.
  */
 public class ParallelState extends AbstractState {
 
-
+	private Logger log = LoggerFactory.getLogger(ParallelState.class);
    
     public ParallelState(String name, List<Service<?>> services) {
         super(name,services);
     }
 
 
-    public void handle(final ServiceExecutor executor,final ServiceContext context) {
-
+    public StateExecutionStatus handle(final ServiceExecutor executor,final ServiceContext context) {
+    	log.info("inside Parallel State handle()");
+    	StateExecutionStatus status = StateExecutionStatus.UNKNOWN;
         Collection<Future<?>> tasks = new ArrayList<Future<?>>();
         List<Service<?>> services = getServices();
 
@@ -35,20 +41,22 @@ public class ParallelState extends AbstractState {
             
 
         }
-            Collection<Object> results = new ArrayList();
+            Collection<Object> results = new ArrayList<Object>();
 
             for (Future<?> task1 : tasks) {
                 try {
                     results.add((Object)task1.get());
+                    status = StateExecutionStatus.COMPLETED;
                 } catch (ExecutionException e) {
-                    e.printStackTrace();
+                	status = StateExecutionStatus.FAILED;
+                	log.error(e.getMessage(),e);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                	status = StateExecutionStatus.FAILED;
+                    log.error(e.getMessage(),e);
                 }
             }
 
-
-
+            return status;
 
     }
 

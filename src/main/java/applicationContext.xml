@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:javaee="http://xmlns.jcp.org/xml/ns/javaee"
-	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:javaee="http://xmlns.jcp.org/xml/ns/javaee" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
@@ -13,86 +11,121 @@
 
 	<bean id="propertyPlaceHolder"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="properties">
-			<map>
-				<entry key="processDefLoc" value="G:/Richita/process-definition.xml"></entry>
-			</map>
-		</property>	
+		<property name="locations">
+			<list>
+				<value>classpath*:microkernel.properties</value>
+			</list>
+		</property>
+		<!-- <property name="properties"> <map> <entry key="processDefLoc" value="G:/Richita/process-definition.xml"></entry> 
+			</map> </property> -->
+	</bean>
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="url" value="jdbc:mysql://localhost:3306/weatherdb" />
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="username" value="root" />
+		<property name="password" value="monday99" />
+	</bean>
+	<bean id="hibernateSessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="annotatedClasses">
+			<list>
+				<value>com.weather.xml1.CurrentWeather</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.current_session_context_class">thread</prop>
+				<prop key="hibernate.show_sql">false</prop>
+			</props>
+		</property>
 	</bean>
 
+	<bean id="countryCityService" class="com.weather.service.CountryCityService">
+	</bean>
+	<bean id="cityTempratureService" class="com.weather.service.TempratureService">
+		<property name="session" ref="hibernateSessionFactory" />
+	</bean>
+	<bean id="tempratureService" class="com.weather.service.SingleTempratureService">
+		<property name="session" ref="hibernateSessionFactory" />
+	</bean>
+	<bean id="helloWorldService" class="com.dummy.service.HelloWorldService">
+		<property name="name" value="HelloWorld" />
+	</bean>
 	<bean id="serviceLocator"
 		class="com.microkernel.core.service.locator.SimpleServiceLocator">
 	</bean>
 
+	<bean id="fileWriter"
+			class="com.weather.service.FileWriter">
+		<property name="fileName" value="${FILE_NAME}" />
+	</bean>
+	
+	<bean id="dbWriter"
+		class="com.weather.service.DBWriter">
+		<property name="session" ref="hibernateSessionFactory" />	
+	</bean>
 
-	<bean id="helloWorldService"
-		class="com.dummy.service.HelloWorldService">
-		<property name="name" value="HelloWorld"/>	
-	</bean>
-	
-	
-	<bean id="flowHolder"
-		class="com.microkernel.core.flow.support.FlowHolderImpl">
+
+
+
+	<bean id="flowHolder" class="com.microkernel.core.flow.support.FlowHolderImpl">
 		<property name="parser" ref="processDefParser" />
-		<property name="processDefinitionLoc" value="${processDefLoc}" />	
+		<property name="processDefinitionLoc" value="${processDefLoc}" />
 	</bean>
-	
-	<bean id="processOrchestrator"
-		class="com.microkernel.core.orchestrator.ProcessOrchestrator">
+
+	<bean id="processOrchestrator" class="com.microkernel.core.orchestrator.ProcessOrchestrator">
 		<property name="holder" ref="flowHolder" />
 		<property name="executor" ref="processExecutor" />
 	</bean>
-	
-	<bean id="processExecutor"
-		class="com.microkernel.core.orchestrator.ProcessFlowExecutor">
-		<property name="executor" ref="executorProc" />	
+
+	<bean id="processExecutor" class="com.microkernel.core.orchestrator.ProcessFlowExecutor">
+		<property name="executor" ref="executorProc" />
 	</bean>
-	
-	<bean id="serviceExecutor"
-		class="com.microkernel.core.task.executor.AsyncServiceExecutor">
-		<property name="task" ref="executorServ" />	
+
+	<bean id="serviceExecutor" class="com.microkernel.core.task.executor.AsyncServiceExecutor">
+		<property name="task" ref="executorServ" />
 	</bean>
-	
+
 	<!-- PARSER Beans -->
-	
+
 	<bean id="executorProc"
 		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
-		<property name="maxPoolSize" value="10" />
-		<property name="queueCapacity" value="10" />
-		<property name="corePoolSize" value="10" />
-		<property name="threadNamePrefix" value="PROC-" />	
+		<property name="maxPoolSize" value="${PROCESS_MAX_POOL_SIZE}" />
+		<property name="queueCapacity" value="${PROCESS_QUEUE_CAPACITY}" />
+		<property name="corePoolSize" value="${PROCESS_CORE_POOL_SIZE}" />
+		<property name="threadNamePrefix" value="${PROCESS_THREAD_PREFIX}" />
 	</bean>
-	
+
 	<bean id="executorServ"
 		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
-		<property name="maxPoolSize" value="10" />
-		<property name="queueCapacity" value="10" />
-		<property name="corePoolSize" value="10" />
-		<property name="threadNamePrefix" value="SERV-" />	
+		<property name="maxPoolSize" value="${SERVICE_MAX_POOL_SIZE}" />
+		<property name="queueCapacity" value="${SERVICE_QUEUE_CAPACITY}" />
+		<property name="corePoolSize" value="${SERVICE_CORE_POOL_SIZE}" />
+		<property name="threadNamePrefix" value="${SERVICE_THREAD_PREFIX}" />
 	</bean>
-	
-	<bean id="processDefParser" 
+
+	<bean id="processDefParser"
 		class="com.microkernel.core.xml.configuration.MicrokernelProcessDefinitionParser">
 		<property name="parser" ref="flowParser" />
 	</bean>
-	
-	<bean id="flowParser"
-		class="com.microkernel.core.xml.configuration.FlowParser">
+
+	<bean id="flowParser" class="com.microkernel.core.xml.configuration.FlowParser">
 		<property name="parser" ref="stateParser" />
 		<property name="executor" ref="serviceExecutor" />
 	</bean>
-	
-	<bean id="stateParser"
-		class="com.microkernel.core.xml.configuration.StateParser">
+
+	<bean id="stateParser" class="com.microkernel.core.xml.configuration.StateParser">
 		<property name="parser" ref="serviceParser" />
 	</bean>
-	
-	<bean id="serviceParser"
-		class="com.microkernel.core.xml.configuration.ServiceParser" depends-on="serviceLocator">
-		<property name="serviceLocator" ref="serviceLocator" />	
+
+	<bean id="serviceParser" class="com.microkernel.core.xml.configuration.ServiceParser"
+		depends-on="serviceLocator">
+		<property name="serviceLocator" ref="serviceLocator" />
 	</bean>
-	
-	<bean id="springInit"
-		class="com.microkernel.core.spring.bean.SpringConfiguration"></bean>
-	
+
+	<bean id="springInit" class="com.microkernel.core.spring.bean.SpringConfiguration"></bean>
+
 </beans>

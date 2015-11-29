@@ -31,4 +31,12 @@ public class ServiceContext {
 	public Object getResponse(){
 		return map.get(RESPONSE);
 	}
+	
+	public <T> T get(String key) {
+		return (T) map.get(key);
+	}
+	
+	public void add(String key,Object value) {
+		this.map.put(key, value);
+	}
 }
