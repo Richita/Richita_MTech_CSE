@@ -6,6 +6,8 @@ import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.Lifecycle;
 import org.springframework.context.event.ContextClosedEvent;
@@ -17,6 +19,8 @@ import com.microkernel.core.flow.ServiceExecutor;
 
 public class AsyncServiceExecutor implements ServiceExecutor,RejectedExecutionHandler,ApplicationListener<ContextClosedEvent> {
 
+	private Logger log = LoggerFactory.getLogger(AsyncServiceExecutor.class);
+	
 	private ThreadPoolTaskExecutor task;
 	
 	
@@ -34,20 +38,23 @@ public class AsyncServiceExecutor implements ServiceExecutor,RejectedExecutionHa
 	
 	@Override
 	public Future executeService(final Service<? super Object> service,final ServiceContext context) {
-		Future<?> submit = task.submit(new Runnable() {
-			
+		Future<String> future = task.submit(new Callable<String>() {
+
 			@Override
-			public void run() {
-				try {
-					service.process(context.getRequest(),context);
-				} catch (Exception e) {
-					e.printStackTrace();
+			public String call() throws Exception {
+				String status = "FAIL";
+				try{
+					service.process(context.getRequest(), context);
+					status = "DONE";
+				}catch(Exception e){
+					context.setException(e);
 				}
-				
+				log.info("Service : "+service.getClass().getSimpleName()+" ["+status+"]");
+				return status;
 			}
 		});
 		
-		return submit;
+		return future;
 	}
 
 	@Override

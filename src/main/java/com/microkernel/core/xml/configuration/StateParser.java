@@ -12,6 +12,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import com.microkernel.core.Service;
+import com.microkernel.core.flow.State;
 import com.microkernel.core.flow.support.StateTransition;
 import com.microkernel.core.state.ParallelState;
 import com.microkernel.core.state.SequentialState;
@@ -52,17 +53,23 @@ public class StateParser implements Parser<StateTransition>{
 
     private final String SEQUENTIAL = "sequential";
 
+    private final String ATTR_TIMEOUT = "timeout";
 
     public StateTransition parse(Element element) {
-        String executorId = element.getAttribute(ATTR_ID);
+        State state = null;
+    	String executorId = element.getAttribute(ATTR_ID);
         String type = element.getAttribute(ATTR_TYPE);
         String next = element.getAttribute(ATTR_NEXT);
+        String timeoutString = element.getAttribute(ATTR_TIMEOUT);
+        long timeout = 0; // TODO can do default here too.
         NodeList list = element.getElementsByTagName("next");
         
         log.info("Parsing State : "+ executorId);
 
+        // check if attributes are not set in process-def.xml then take the default one
         if("".equalsIgnoreCase(next)) next = null;
         if("".equalsIgnoreCase(type)) type = SEQUENTIAL;
+        if(!"".equalsIgnoreCase(timeoutString)) timeout = Long.valueOf(timeoutString);
         
         NodeList serviceElement = element.getElementsByTagName("service");
 
@@ -71,17 +78,17 @@ public class StateParser implements Parser<StateTransition>{
             Service<?> service = parser.parse((Element) serviceElement.item(i));
             services.add(service);
         }
-
+        
         if(SEQUENTIAL.equalsIgnoreCase(type)){
         	log.info("Sequential State :"+executorId);
-            return StateTransition.createStateTransition(new SequentialState(executorId,services),"*",next);
+        	state = new SequentialState(executorId, services, timeout);
         }
 
         if(PARALLEL.equalsIgnoreCase(type)){
         	log.info("Parallel State :"+executorId);
-            return StateTransition.createStateTransition(new ParallelState(executorId,services),"*",next);
+        	state = new ParallelState(executorId, services, timeout);
         }
 
-        return null;
+        return StateTransition.createStateTransition(state,"*",next);
     }
 }

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,7 +120,17 @@ public class SimpleFlow implements Flow {
 		
 		while(isFlowContinue(state,status)){
 			log.info("Executing State = "+state.getName());
-			status = state.handle(executor,context);
+			try {
+				status = state.handle(executor,context);
+			} catch (TimeoutException e) {
+
+				status = StateExecutionStatus.FAILED;
+				log.error(e.getMessage(),e);
+				e.printStackTrace();
+				break;
+			}finally{
+				
+			}
 			state = doNext(state,status);
 		}
 		
@@ -128,6 +139,8 @@ public class SimpleFlow implements Flow {
 	}
 
 	private State doNext(State state, StateExecutionStatus status) {
+		if(status.isFail())
+			return null;
 		Set<StateTransition> set = this.transitionMap.get(state.getName());
 		for(StateTransition transition: set)
 		{

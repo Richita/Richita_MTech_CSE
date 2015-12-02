@@ -19,7 +19,7 @@ public class FileWriter implements Service<String> {
 	@Override
 	public void process(String data, ServiceContext context) throws Exception {
 		List<CurrentWeather> allWeather = context.get("PERSIST_DATA");
-		
+
 		java.io.FileWriter writer = new java.io.FileWriter(getFileName());
 		writer.write("CITY,LOCATION,TIME,WIND,VISIBILITY,TEMPERATURE,DEWPOINT,RELATIVEHUMIDITY,PRESSURE,STATUS"+System.lineSeparator());
 		for(CurrentWeather weather : allWeather){

@@ -1,9 +1,12 @@
 package com.microkernel.core.orchestrator;
 
 import java.util.HashMap;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -14,6 +17,10 @@ import com.microkernel.core.ServiceContext;
 import com.microkernel.core.flow.Flow;
 
 public class ProcessFlowExecutor implements ProcessExecutor, ApplicationListener<ContextClosedEvent> {
+
+	private Logger log = LoggerFactory.getLogger(ProcessFlowExecutor.class);
+
+	private final String STATUS_KEY = "status";
 
 	private ThreadPoolTaskExecutor executor;
 	private ThreadLocal<ServiceContext> contexts = new ThreadLocal<ServiceContext>() {
@@ -29,18 +36,29 @@ public class ProcessFlowExecutor implements ProcessExecutor, ApplicationListener
 		ctx.clear();
 		ctx.setRequest(request);
 
-		FutureTask<Void> task = new FutureTask<Void>(new Runnable() {
+		FutureTask<Integer> task = new FutureTask<Integer>(new Callable<Integer>() {
 
 			@Override
-			public void run() {
+			public Integer call() throws Exception {
 				flow.start(ctx);
+				return ctx.get(STATUS_KEY);
 			}
-		}, null);
-
+		});
 		getExecutor().execute(task);
 
+		/**
+		 * this seems to wait inifinite but its not as if any service gets
+		 * timeout then it will be be propogated back to SimpleFlow which will
+		 * stop the entire flow
+		 */
+		int returnType = 0;
 		try {
-			Void void1 = task.get();
+			returnType = task.get();
+		} catch (Exception e) {
+			returnType = FAILED;
+		}
+		switch (returnType) {
+		case SUCCESS:
 			Object response = ctx.getResponse();
 
 			if (null == response) {
@@ -48,10 +66,14 @@ public class ProcessFlowExecutor implements ProcessExecutor, ApplicationListener
 			}
 
 			callback.onResponse(response);
-		} catch (InterruptedException e) {
-			callback.onError(e);
-		} catch (ExecutionException e) {
-			callback.onError(e);
+			break;
+
+		case FAILED:
+			Throwable exception = ctx.getException();
+			if (exception == null)
+				exception = new Throwable("Something happened at Service Level that microkernel is not aware of.");
+			callback.onError(exception);
+			break;
 		}
 
 	}

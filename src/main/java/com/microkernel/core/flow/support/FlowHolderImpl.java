@@ -11,15 +11,15 @@ import com.microkernel.core.flow.Flow;
 import com.microkernel.core.flow.FlowHolder;
 import com.microkernel.core.xml.ProcessDefinitionParser;
 
-public class FlowHolderImpl implements FlowHolder,InitializingBean {
+public class FlowHolderImpl implements FlowHolder, InitializingBean {
 
 	@Autowired
 	private ProcessDefinitionParser parser;
-	
+
 	private String processDefinitionLoc;
-	
-	
-	
+
+	private boolean isInit = false;
+
 	public String getProcessDefinitionLoc() {
 		return processDefinitionLoc;
 	}
@@ -36,42 +36,44 @@ public class FlowHolderImpl implements FlowHolder,InitializingBean {
 		this.parser = parser;
 	}
 
-
 	private HashMap<String, Flow> flows = new HashMap<String, Flow>();
-	
-	public FlowHolderImpl(){}
-	
+
+	public FlowHolderImpl() {
+	}
+
 	public FlowHolderImpl(Collection<Flow> flows) {
 		parseFlows(flows);
 	}
-	
+
 	private void parseFlows(Collection<Flow> flows) {
-		for(Flow flow: flows){
+		for (Flow flow : flows) {
 			this.flows.put(flow.getName(), flow);
 		}
 	}
 
 	public Flow getFlow(String name) {
+		if (!isInit) {
+			initialize();
+		}
 		return this.flows.get(name);
 	}
 
+	private void initialize() {
+		File f = new File(processDefinitionLoc);
+		if (f.exists()) {
+			FlowHolder holder = parser.parseXML(f);
+			parseFlows(holder.getFlows());
+		}
+	}
 
 	public Collection<Flow> getFlows() {
 		return this.flows.values();
 	}
-	
-	
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		if(null == parser)
+		if (null == parser)
 			throw new IllegalArgumentException("Parser is Not set cannot parse process-definition.");
-		
-		File f = new File(processDefinitionLoc);
-		if(f.exists()){
-			FlowHolder holder = parser.parseXML(f);
-			parseFlows(holder.getFlows());
-		}
-		
+
 	}
 }

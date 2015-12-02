@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:javaee="http://xmlns.jcp.org/xml/ns/javaee" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+		http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/batchXML_1_0.xsd">
+
+	<bean id="processOrchestrator" class="${mk.class.orchestrator}">
+		<property name="flowHolder" ref="flowHolder" />
+		<property name="executor" ref="processExecutor" />
+	</bean>
+	
+	<!-- PARSER Beans -->
+
+	
+	<bean id="flowHolder" class="${mk.class.flowHolder}">
+		<property name="parser" ref="processDefParser" />
+		<property name="processDefinitionLoc" value="${processDefinitionLocation}" />
+	</bean>
+	<bean id="processDefParser"
+		class="${mk.class.processDefinitionParser}">
+		<property name="parser" ref="flowParser" />
+	</bean>
+
+	<bean id="flowParser" class="${mk.class.flowParser}">
+		<property name="parser" ref="stateParser" />
+		<property name="executor" ref="serviceExecutor" />
+	</bean>
+
+	<bean id="stateParser" class="${mk.class.stateParser}">
+		<property name="parser" ref="serviceParser" />
+	</bean>
+
+	<bean id="serviceParser" class="${mk.class.serviceParser}"
+		depends-on="serviceLocator">
+		<property name="serviceLocator" ref="serviceLocator" />
+	</bean>
+	
+	<bean id="serviceLocator"
+		class="${mk.class.serviceLocator}">
+	</bean>
+
+	<!--  Executors -->
+	<bean id="processExecutor" class="${mk.class.processExecutor}">
+		<property name="executor" ref="executorProc" />
+	</bean>
+
+	<bean id="serviceExecutor" class="${mk.class.serviceExecutor}">
+		<property name="task" ref="executorServ" />
+	</bean>
+	
+	<bean id="executorProc"
+		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="maxPoolSize" value="${PROCESS_MAX_POOL_SIZE}" />
+		<property name="queueCapacity" value="${PROCESS_QUEUE_CAPACITY}" />
+		<property name="corePoolSize" value="${PROCESS_CORE_POOL_SIZE}" />
+		<property name="threadNamePrefix" value="${PROCESS_THREAD_PREFIX}" />
+		<property name="waitForTasksToCompleteOnShutdown">
+			<value type="boolean">${PROCESS_ALLOWTASKCOMPLETE_ONSHUTDOWN}</value>
+		</property>
+	</bean>
+
+	<bean id="executorServ"
+		class="${mk.class.serviceThreadPool}">
+		<property name="maxPoolSize" value="${SERVICE_MAX_POOL_SIZE}" />
+		<property name="queueCapacity" value="${SERVICE_QUEUE_CAPACITY}" />
+		<property name="corePoolSize" value="${SERVICE_CORE_POOL_SIZE}" />
+		<property name="threadNamePrefix" value="${SERVICE_THREAD_PREFIX}" />
+		<property name="waitForTasksToCompleteOnShutdown" value="${SERVICE_ALLOWTASKCOMPLETE_ONSHUTDOWN}" />
+	</bean>
+
+	<bean id="springInit" class="com.microkernel.core.spring.bean.SpringConfiguration"></bean>
+	
+	<bean id="propertyEditors" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+		<property name="customEditors">
+			<map>
+				<entry key="com.microkernel.core.spring.bean.CustomPropertyEditor" value="com.microkernel.core.spring.bean.CustomPropertyEditor" />
+			</map>
+		</property>
+	</bean>
+
+</beans>
