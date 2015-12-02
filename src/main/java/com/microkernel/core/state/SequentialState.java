@@ -15,6 +15,13 @@ import com.microkernel.core.ServiceContext;
 import com.microkernel.core.flow.ServiceExecutor;
 import com.microkernel.core.flow.StateExecutionStatus;
 
+/**
+ * Sequential state will execute service one after other in sequence, failure of one service will stop the state
+ * and the execution will move to failure state defined in process-definition.xml
+ * 
+ * @author NinadIngole
+ *
+ */
 public class SequentialState extends AbstractState {
 
 	private Logger log = LoggerFactory.getLogger(SequentialState.class);
@@ -26,6 +33,7 @@ public class SequentialState extends AbstractState {
 
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public StateExecutionStatus handle(ServiceExecutor executor, ServiceContext context) throws TimeoutException {
 		StateExecutionStatus status = StateExecutionStatus.UNKNOWN;
@@ -59,6 +67,9 @@ public class SequentialState extends AbstractState {
 
 	}
 
+	/**
+	 * Future extensibility not in use
+	 */
 	public boolean isEndState() {
 		return false;
 	}

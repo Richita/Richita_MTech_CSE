@@ -12,19 +12,18 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.microkernel.core.flow.Flow;
 import com.microkernel.core.flow.FlowHolder;
 import com.microkernel.core.flow.support.FlowHolderImpl;
-import com.microkernel.core.flow.support.SimpleFlow;
 import com.microkernel.core.util.Assert;
 import com.microkernel.core.xml.Parser;
 import com.microkernel.core.xml.ProcessDefinitionParser;
 
 /**
+ * Implementation of ProcessDefinitionParser to parse the entire process-def
  * Created by NinadIngole on 9/15/2015.
  */
 public class MicrokernelProcessDefinitionParser implements  ProcessDefinitionParser{
@@ -65,6 +64,7 @@ public class MicrokernelProcessDefinitionParser implements  ProcessDefinitionPar
 		return holder;
 	}
 
+	@SuppressWarnings("unused")
 	private static final String MICROKERNEL_TAG = "microkernel";
 	
 	private static final String FLOW_TAG = "flow";

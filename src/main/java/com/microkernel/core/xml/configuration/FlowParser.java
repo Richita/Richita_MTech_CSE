@@ -15,6 +15,11 @@ import com.microkernel.core.flow.support.SimpleFlow;
 import com.microkernel.core.flow.support.StateTransition;
 import com.microkernel.core.xml.Parser;
 
+/**
+ * Implementation of Parser to parse Flow tag.
+ * @author NinadIngole
+ *
+ */
 public class FlowParser implements Parser<Flow> {
 	private Logger log = LoggerFactory.getLogger(FlowParser.class);
 	@Autowired

@@ -13,22 +13,20 @@ import com.microkernel.core.flow.Flow;
 import com.microkernel.core.flow.FlowHolder;
 
 /**
+ * Implementation of Orchestrator Interface client code will send the request to
+ * orchestrator with the request obejct, flowName, and a callback on which microkernel
+ * after processing will send the resposne or error if any exception occurs
  * @author NinadIngole
  *
  */
-public class ProcessOrchestrator implements Orchestrator,InitializingBean {
-
+public final class ProcessOrchestrator implements Orchestrator,InitializingBean {
+	
 	private Logger log = LoggerFactory.getLogger(ProcessOrchestrator.class);
 	
 	@Autowired
 	private FlowHolder flowHolder;
 	
 	private ProcessExecutor executor;
-	
-	
-	
-	
-
 	
 	public ProcessExecutor getExecutor() {
 		return executor;
@@ -43,8 +41,6 @@ public class ProcessOrchestrator implements Orchestrator,InitializingBean {
 		return flowHolder;
 	}
 
-	
-	
 	public void setFlowHolder(FlowHolder flowHolder) {
 		this.flowHolder = flowHolder;
 	}
@@ -54,8 +50,11 @@ public class ProcessOrchestrator implements Orchestrator,InitializingBean {
 		log.info("Starting Flow Execution of "+flowname);
 		log.debug("Input is : "+request.toString());
 		
+		// retrieve flow from flowHolder
 		Flow flow = this.flowHolder.getFlow(flowname);
 		
+		// send flow into execution if the request are more than the queue capacity
+		// of the executor then the task will get rejected
 		executor.execute(request, flow,callback);
 		
 		

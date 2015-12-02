@@ -3,6 +3,7 @@ package com.microkernel.core;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * THe Context that is used as the temporary storage to pass data between different state
  * Created by NinadIngole on 9/15/2015.
  */
 public class ServiceContext {

@@ -17,6 +17,11 @@ import com.microkernel.core.flow.ServiceExecutor;
 import com.microkernel.core.flow.State;
 import com.microkernel.core.flow.StateExecutionStatus;
 
+/**
+ * Implementaton of Flow Interface
+ * @author NinadIngole
+ *
+ */
 public class SimpleFlow implements Flow {
 
 	Logger log = LoggerFactory.getLogger(SimpleFlow.class);

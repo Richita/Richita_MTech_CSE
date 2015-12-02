@@ -11,6 +11,13 @@ import com.microkernel.core.flow.Flow;
 import com.microkernel.core.flow.FlowHolder;
 import com.microkernel.core.xml.ProcessDefinitionParser;
 
+/**
+ * Flow Holder implementation which cotains all the parsed flows object which is then utilized
+ * by Orchestrator.
+ * 
+ * @author NinadIngole
+ *
+ */
 public class FlowHolderImpl implements FlowHolder, InitializingBean {
 
 	@Autowired

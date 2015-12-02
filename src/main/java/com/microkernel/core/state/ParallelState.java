@@ -39,6 +39,7 @@ public class ParallelState extends AbstractState {
 	 * This method is invoked by the service executor to process the services
 	 * @throws TimeoutException 
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public StateExecutionStatus handle(final ServiceExecutor executor, final ServiceContext context) throws TimeoutException {
 		log.info("inside Parallel State handle()");
 		Assert.notNull(executor, "Service Executor Passed is NULL.");
@@ -53,8 +54,7 @@ public class ParallelState extends AbstractState {
 			tasks.add(future);
 
 		}
-		Collection<Object> results = new ArrayList<Object>();
-
+		
 		for (Future<String> task : tasks) {
 			try {
 				String result = task.get(getTimeout(), TimeUnit.MILLISECONDS);

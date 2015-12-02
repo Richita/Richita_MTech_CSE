@@ -1,5 +1,10 @@
 package com.microkernel.core.flow;
 
+/**
+ * State Executions Status which is used to derive the next state to execute.
+ * @author NinadIngole
+ *
+ */
 public class StateExecutionStatus implements Comparable<StateExecutionStatus> {
 	
 	public static final StateExecutionStatus COMPLETED = new StateExecutionStatus(Status.COMPLETED.toString());

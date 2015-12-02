@@ -1,8 +1,6 @@
 package com.microkernel.core.orchestrator;
 
-import java.util.HashMap;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 import org.slf4j.Logger;
@@ -16,6 +14,17 @@ import com.microkernel.core.ProcessExecutor;
 import com.microkernel.core.ServiceContext;
 import com.microkernel.core.flow.Flow;
 
+/**
+ * ProcessFlowExecutor will execute the flow passed by the Orchestrator, the
+ * threadpool of processflowexecutor is configurable through property file the
+ * thread pool capacity or the numberof threads should be optimal to serve all
+ * request. The formula
+ * 
+ * can be used to calculate the optimal thread value
+ * 
+ * @author NinadIngole
+ *
+ */
 public class ProcessFlowExecutor implements ProcessExecutor, ApplicationListener<ContextClosedEvent> {
 
 	private Logger log = LoggerFactory.getLogger(ProcessFlowExecutor.class);
@@ -55,25 +64,29 @@ public class ProcessFlowExecutor implements ProcessExecutor, ApplicationListener
 		try {
 			returnType = task.get();
 		} catch (Exception e) {
+			log.error(e.getMessage(),e);
 			returnType = FAILED;
 		}
 		switch (returnType) {
-		case SUCCESS:
-			Object response = ctx.getResponse();
+			// INCASE of sucess give event callback on onResponse with resposne object
+			case SUCCESS:
+				Object response = ctx.getResponse();
+				
+				// response object cannot be null.
+				if (null == response) {
+					callback.onError(new NullPointerException("There was no Response recieved as flow result. Is this a batch process ?"));
+				}
+	
+				callback.onResponse(response);
+				break;
 
-			if (null == response) {
-				callback.onError(new NullPointerException("There was no Response recieved from any service"));
-			}
-
-			callback.onResponse(response);
-			break;
-
-		case FAILED:
-			Throwable exception = ctx.getException();
-			if (exception == null)
-				exception = new Throwable("Something happened at Service Level that microkernel is not aware of.");
-			callback.onError(exception);
-			break;
+			// INCASE of Failure give event callback on onError method with the exception details
+			case FAILED:
+				Throwable exception = ctx.getException();
+				if (exception == null)
+					exception = new Throwable("Something happened at Service Level that microkernel is not aware of.");
+				callback.onError(exception);
+				break;
 		}
 
 	}
@@ -86,6 +99,9 @@ public class ProcessFlowExecutor implements ProcessExecutor, ApplicationListener
 		this.executor = executor;
 	}
 
+	/**
+	 * Gracefully shutdown the threadpool when spring application context is destroyed i.e. Application is stopped
+	 */
 	@Override
 	public void onApplicationEvent(ContextClosedEvent event) {
 		this.getExecutor().shutdown();

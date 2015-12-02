@@ -1,13 +1,10 @@
 package com.microkernel.core.xml.configuration;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -19,6 +16,7 @@ import com.microkernel.core.state.SequentialState;
 import com.microkernel.core.xml.Parser;
 
 /**
+ * Implementation of Parser interface to parse StateTransition i.e State tag
  * Created by NinadIngole on 9/15/2015.
  */
 public class StateParser implements Parser<StateTransition>{
@@ -55,7 +53,8 @@ public class StateParser implements Parser<StateTransition>{
 
     private final String ATTR_TIMEOUT = "timeout";
 
-    public StateTransition parse(Element element) {
+    @SuppressWarnings("unused")
+	public StateTransition parse(Element element) {
         State state = null;
     	String executorId = element.getAttribute(ATTR_ID);
         String type = element.getAttribute(ATTR_TYPE);

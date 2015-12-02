@@ -7,6 +7,8 @@ import com.microkernel.core.Service;
 import com.microkernel.core.ServiceContext;
 
 /**
+ * Every State in process def is converted into object of State implementation by Process definition parser
+ * with the details required to form a valid state for state machine
  *
  */
 public interface State {
