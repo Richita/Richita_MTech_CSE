@@ -29,6 +29,9 @@ public class SimpleFlow implements Flow {
 
 	private final String name;
 
+	private final String STATUS_KEY = "status";
+
+	
 	private List<StateTransition> transitions = new ArrayList<StateTransition>();
 
 	private HashMap<String, Set<StateTransition>> transitionMap = new HashMap<String, Set<StateTransition>>();
@@ -126,7 +129,8 @@ public class SimpleFlow implements Flow {
 			}
 			state = doNext(state, status);
 		}
-
+		
+		context.add(STATUS_KEY, status);
 	}
 
 	private State doNext(State state, StateExecutionStatus status) {
@@ -142,7 +146,7 @@ public class SimpleFlow implements Flow {
 	}
 
 	private boolean isFlowContinue(State state, StateExecutionStatus status) {
-		if (null == state || status.isComplete() || status.isStop()) {
+		if (null == state || status.isStop()) {
 			log.info("End of flow " + name + ".");
 			return false;
 		}

@@ -100,7 +100,7 @@ public class StateParser implements Parser<List<StateTransition>>{
         if(!("".equalsIgnoreCase(fail)))
         	transitions.add(StateTransition.createStateTransition(state, "FAIL", fail));
         
-        transitions.add(StateTransition.createStateTransition(state, "SUCCESS", next));
+        transitions.add(StateTransition.createStateTransition(state, "COMPLETED", next));
         	
         return transitions;
     }

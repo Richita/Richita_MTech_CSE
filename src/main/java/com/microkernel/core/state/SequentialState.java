@@ -25,7 +25,8 @@ import com.microkernel.core.flow.StateExecutionStatus;
 public class SequentialState extends AbstractState {
 
 	private Logger log = LoggerFactory.getLogger(SequentialState.class);
-
+	
+	
 	public SequentialState(String name, List<Service<?>> services, long timeout) {
 		super(name, services);
 		if (timeout > 0)

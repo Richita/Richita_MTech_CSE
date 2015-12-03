@@ -13,6 +13,7 @@ import com.microkernel.core.CallBack;
 import com.microkernel.core.ProcessExecutor;
 import com.microkernel.core.ServiceContext;
 import com.microkernel.core.flow.Flow;
+import com.microkernel.core.flow.StateExecutionStatus;
 
 /**
  * ProcessFlowExecutor will execute the flow passed by the Orchestrator, the
@@ -45,10 +46,10 @@ public class ProcessFlowExecutor implements ProcessExecutor, ApplicationListener
 		ctx.clear();
 		ctx.setRequest(request);
 
-		FutureTask<Integer> task = new FutureTask<Integer>(new Callable<Integer>() {
+		FutureTask<StateExecutionStatus> task = new FutureTask<StateExecutionStatus>(new Callable<StateExecutionStatus>() {
 
 			@Override
-			public Integer call() throws Exception {
+			public StateExecutionStatus call() throws Exception {
 				flow.start(ctx);
 				return ctx.get(STATUS_KEY);
 			}
@@ -60,16 +61,16 @@ public class ProcessFlowExecutor implements ProcessExecutor, ApplicationListener
 		 * timeout then it will be be propogated back to SimpleFlow which will
 		 * stop the entire flow
 		 */
-		int returnType = 0;
+		StateExecutionStatus returnType = StateExecutionStatus.UNKNOWN;
 		try {
 			returnType = task.get();
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);
-			returnType = FAILED;
+			returnType = StateExecutionStatus.FAIL;
 		}
-		switch (returnType) {
+		switch (returnType.getName()) {
 			// INCASE of sucess give event callback on onResponse with resposne object
-			case SUCCESS:
+			case "SUCCESS":
 				Object response = ctx.getResponse();
 				
 				// response object cannot be null.
@@ -81,7 +82,7 @@ public class ProcessFlowExecutor implements ProcessExecutor, ApplicationListener
 				break;
 
 			// INCASE of Failure give event callback on onError method with the exception details
-			case FAILED:
+			case "FAIL":
 				Throwable exception = ctx.getException();
 				if (exception == null)
 					exception = new Throwable("Something happened at Service Level that microkernel is not aware of.");
