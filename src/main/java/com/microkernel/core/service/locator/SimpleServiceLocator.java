@@ -9,10 +9,16 @@ import org.springframework.core.Ordered;
 import com.microkernel.core.ServiceLocator;
 import com.microkernel.core.Service;
 
+/**
+ * Implementation of ServiceLocator
+ * @author NinadIngole
+ *
+ */
 public class SimpleServiceLocator implements ServiceLocator, Ordered,BeanPostProcessor{
 
 	private HashMap<String, Service<?>> services = new HashMap<String, Service<?>>();
 	
+	@SuppressWarnings("rawtypes")
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		Class<?> clazz = bean.getClass();
 		Class[] interfaces = clazz.getInterfaces();

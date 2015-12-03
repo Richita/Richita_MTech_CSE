@@ -3,6 +3,7 @@ package com.microkernel.core;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * THe Context that is used as the temporary storage to pass data between different state
  * Created by NinadIngole on 9/15/2015.
  */
 public class ServiceContext {
@@ -11,6 +12,15 @@ public class ServiceContext {
 	public final static String RESPONSE = "response";
 	
 	private ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<String, Object>();
+	private Throwable t = null;
+	
+	public void setException(Throwable t){
+		this.t = t;
+	}
+	
+	public Throwable getException(){
+		return t;
+	}
 	
 	public void setRequest(Object request){
 		this.map.put(REQUEST, request);
@@ -22,6 +32,7 @@ public class ServiceContext {
 	
 	public void clear(){
 		map.clear();
+		t = null;
 	}
 	
 	public Object getRequest() {

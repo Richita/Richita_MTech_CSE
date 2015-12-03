@@ -15,10 +15,15 @@ import com.microkernel.core.flow.support.SimpleFlow;
 import com.microkernel.core.flow.support.StateTransition;
 import com.microkernel.core.xml.Parser;
 
+/**
+ * Implementation of Parser to parse Flow tag.
+ * @author NinadIngole
+ *
+ */
 public class FlowParser implements Parser<Flow> {
 	private Logger log = LoggerFactory.getLogger(FlowParser.class);
 	@Autowired
-	Parser<StateTransition> parser;
+	Parser<List<StateTransition>> parser;
 	
 	@Autowired
 	ServiceExecutor executor;
@@ -33,11 +38,11 @@ public class FlowParser implements Parser<Flow> {
 		this.executor = executor;
 	}
 
-	public Parser<StateTransition> getParser() {
+	public Parser<List<StateTransition>> getParser() {
 		return parser;
 	}
 
-	public void setParser(Parser<StateTransition> parser) {
+	public void setParser(Parser<List<StateTransition>> parser) {
 		this.parser = parser;
 	}
 
@@ -53,9 +58,9 @@ public class FlowParser implements Parser<Flow> {
 		NodeList executors = element.getElementsByTagName(ELE_STATE);
 
 		for(int i = 0 ; i < executors.getLength(); i++){
-			StateTransition transition = parser.parse((Element) executors.item(i));
+			List<StateTransition> transition = parser.parse((Element) executors.item(i));
 			if(transition != null)
-				stateTransitions.add(transition);
+				stateTransitions.addAll(transition);
 		}
 		SimpleFlow flow = new SimpleFlow(flowName,stateTransitions);
 		log.info(flow.toString());

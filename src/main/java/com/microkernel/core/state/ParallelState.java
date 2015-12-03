@@ -5,9 +5,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.slf4j.LoggerFactory;
-
+import org.springframework.util.Assert;
 import org.slf4j.Logger;
 
 import com.microkernel.core.Service;
@@ -16,51 +18,72 @@ import com.microkernel.core.flow.ServiceExecutor;
 import com.microkernel.core.flow.StateExecutionStatus;
 
 /**
+ * This class provides functionality to process services in prallel mode in
+ * parallel mode the service executed on individual thread. [WARNING] do not
+ * execute services in parallel that have dependencies as in input or something
+ * else on each other, use sequential state in that case.
+ * 
  * Created by NinadIngole on 9/14/2015.
  */
 public class ParallelState extends AbstractState {
 
 	private Logger log = LoggerFactory.getLogger(ParallelState.class);
-   
-    public ParallelState(String name, List<Service<?>> services) {
-        super(name,services);
-    }
 
+	public ParallelState(String name, List<Service<?>> services, long timeout) {
+		super(name, services);
+		if (timeout > 0)
+			this.setTimeout(timeout);
+	}
 
-    public StateExecutionStatus handle(final ServiceExecutor executor,final ServiceContext context) {
-    	log.info("inside Parallel State handle()");
-    	StateExecutionStatus status = StateExecutionStatus.UNKNOWN;
-        Collection<Future<?>> tasks = new ArrayList<Future<?>>();
-        List<Service<?>> services = getServices();
+	/**
+	 * This method is invoked by the service executor to process the services
+	 * @throws TimeoutException 
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public StateExecutionStatus handle(final ServiceExecutor executor, final ServiceContext context) throws TimeoutException {
+		log.info("inside Parallel State handle()");
+		Assert.notNull(executor, "Service Executor Passed is NULL.");
+		Assert.notNull(context, "Service Context Passed is NULL.");
 
-        for (final Service service : services) {
-            Future<?> task = executor.executeService(service, context);
+		StateExecutionStatus status = StateExecutionStatus.UNKNOWN;
+		Collection<Future<String>> tasks = new ArrayList<Future<String>>();
+		List<Service<?>> services = getServices();
 
-            tasks.add(task);
+		for (final Service service : services) {
+			Future<String> future = executor.executeService(service, context);
+			tasks.add(future);
 
-            
+		}
+		
+		for (Future<String> task : tasks) {
+			try {
+				String result = task.get(getTimeout(), TimeUnit.MILLISECONDS);
+				if(result.equals("SUCCESS")){
+					status = StateExecutionStatus.COMPLETED;
+				}else{
+					status = StateExecutionStatus.FAIL;
+				}
+			} catch (ExecutionException e) {
+				status = StateExecutionStatus.FAIL;
+				log.error(e.getMessage(), e);
+			} catch (InterruptedException e) {
+				status = StateExecutionStatus.FAIL;
+				log.error(e.getMessage(), e);
+			}
+		}
+		log.info("State = "+this.getName()+" : ["+status.getName()+"]");
+		return status;
 
-        }
-            Collection<Object> results = new ArrayList<Object>();
+	}
 
-            for (Future<?> task1 : tasks) {
-                try {
-                    results.add((Object)task1.get());
-                    status = StateExecutionStatus.COMPLETED;
-                } catch (ExecutionException e) {
-                	status = StateExecutionStatus.FAILED;
-                	log.error(e.getMessage(),e);
-                } catch (InterruptedException e) {
-                	status = StateExecutionStatus.FAILED;
-                    log.error(e.getMessage(),e);
-                }
-            }
+	/**
+	 * Future Extensibility to add batch support
+	 */
+	public boolean isEndState() {
+		return false;
+	}
 
-            return status;
-
-    }
-
-    public boolean isEndState() {
-        return false;
-    }
+	
+	
+	
 }

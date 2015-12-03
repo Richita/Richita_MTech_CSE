@@ -1,6 +1,5 @@
 package com.microkernel.core.xml.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Element;
 
 import com.microkernel.core.Service;
@@ -8,6 +7,7 @@ import com.microkernel.core.ServiceLocator;
 import com.microkernel.core.xml.Parser;
 
 /**
+ * This bean class will parse the Service tag of process definition and returns back the Service Object
  * Created by NinadIngole on 9/15/2015.
  */
 public class ServiceParser implements Parser<Service<?>> {

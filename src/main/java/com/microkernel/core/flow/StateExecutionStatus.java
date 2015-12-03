@@ -1,10 +1,15 @@
 package com.microkernel.core.flow;
 
+/**
+ * State Executions Status which is used to derive the next state to execute.
+ * @author NinadIngole
+ *
+ */
 public class StateExecutionStatus implements Comparable<StateExecutionStatus> {
 	
 	public static final StateExecutionStatus COMPLETED = new StateExecutionStatus(Status.COMPLETED.toString());
 	
-	public static final StateExecutionStatus FAILED = new StateExecutionStatus(Status.FAILED.toString());
+	public static final StateExecutionStatus FAIL = new StateExecutionStatus(Status.FAIL.toString());
 	
 	public static final StateExecutionStatus STOPPED = new StateExecutionStatus(Status.STOPPED.toString());
 	
@@ -19,7 +24,7 @@ public class StateExecutionStatus implements Comparable<StateExecutionStatus> {
 	}
 	
 	private enum Status{
-		COMPLETED, STOPPED, FAILED, UNKNOWN;
+		COMPLETED, STOPPED, FAIL, UNKNOWN;
 		
 		static Status match(String value) {
 			for(int i = 0; i < values().length; i++) {
@@ -49,7 +54,7 @@ public class StateExecutionStatus implements Comparable<StateExecutionStatus> {
 	}
 	
 	public boolean isFail() {
-		return name.startsWith(FAILED.getName());
+		return name.startsWith(FAIL.getName());
 	}
 
 	@Override

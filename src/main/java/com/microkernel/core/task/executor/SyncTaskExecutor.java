@@ -5,6 +5,11 @@ import java.io.Serializable;
 import com.microkernel.core.task.TaskExecutor;
 import com.microkernel.core.util.Assert;
 
+/**
+ * Async solves both problem. THis can go in future development
+ * @author NinadIngole
+ *
+ */
 public class SyncTaskExecutor implements TaskExecutor,Serializable {
 
 	/**
