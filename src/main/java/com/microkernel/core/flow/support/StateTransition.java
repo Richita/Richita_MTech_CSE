@@ -63,6 +63,10 @@ public final class StateTransition {
 		return createStateTransition(state,pattern,null);
 	}
 
+	public boolean matches(String pattern){
+		return this.pattern.startsWith(pattern);
+	}
+	
 	@Override
 	public String toString() {
 		return "StateTransition [state=" + state + ", pattern=" + pattern + ", next=" + next + "]";

@@ -19,7 +19,7 @@ import com.microkernel.core.xml.Parser;
  * Implementation of Parser interface to parse StateTransition i.e State tag
  * Created by NinadIngole on 9/15/2015.
  */
-public class StateParser implements Parser<StateTransition>{
+public class StateParser implements Parser<List<StateTransition>>{
     
 	private Logger log = LoggerFactory.getLogger(StateParser.class);
 	
@@ -52,14 +52,19 @@ public class StateParser implements Parser<StateTransition>{
     private final String SEQUENTIAL = "sequential";
 
     private final String ATTR_TIMEOUT = "timeout";
+    
+    private final String ATTR_FAIL = "fail";
 
     @SuppressWarnings("unused")
-	public StateTransition parse(Element element) {
-        State state = null;
+	public List<StateTransition> parse(Element element) {
+    	List<StateTransition> transitions = new ArrayList<StateTransition>();
+    	State state = null;
     	String executorId = element.getAttribute(ATTR_ID);
         String type = element.getAttribute(ATTR_TYPE);
         String next = element.getAttribute(ATTR_NEXT);
         String timeoutString = element.getAttribute(ATTR_TIMEOUT);
+        String fail = element.getAttribute(ATTR_FAIL);
+        
         long timeout = 0; // TODO can do default here too.
         NodeList list = element.getElementsByTagName("next");
         
@@ -72,6 +77,10 @@ public class StateParser implements Parser<StateTransition>{
         
         NodeList serviceElement = element.getElementsByTagName("service");
 
+        if(serviceElement.getLength() < 1){
+        	throw new IllegalArgumentException("There is no state defined in "+executorId+" Tag. Invalid Process-defnition.xml");
+        }
+        
         List<Service<?>> services = new ArrayList<Service<?>>();
         for(int i = 0 ; i < serviceElement.getLength(); i++){
             Service<?> service = parser.parse((Element) serviceElement.item(i));
@@ -88,6 +97,11 @@ public class StateParser implements Parser<StateTransition>{
         	state = new ParallelState(executorId, services, timeout);
         }
 
-        return StateTransition.createStateTransition(state,"*",next);
+        if(!("".equalsIgnoreCase(fail)))
+        	transitions.add(StateTransition.createStateTransition(state, "FAIL", fail));
+        
+        transitions.add(StateTransition.createStateTransition(state, "SUCCESS", next));
+        	
+        return transitions;
     }
 }

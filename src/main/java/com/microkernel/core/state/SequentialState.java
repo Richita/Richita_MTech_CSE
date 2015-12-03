@@ -44,20 +44,20 @@ public class SequentialState extends AbstractState {
 			Future<String> executeService = executor.executeService(service, context);
 			try {
 				String result = executeService.get(getTimeout(), TimeUnit.MILLISECONDS);
-				if (result.equals("DONE")) {
+				if (result.equals("SUCCESS")) {
 					exitStatus.add(result);
 					status = StateExecutionStatus.COMPLETED;
 				} else {
-					status = StateExecutionStatus.FAILED;
+					status = StateExecutionStatus.FAIL;
 					break;
 				}
 
 			} catch (InterruptedException e) {
-				status = StateExecutionStatus.FAILED;
+				status = StateExecutionStatus.FAIL;
 				log.error(e.getMessage(), e);
 				e.printStackTrace();
 			} catch (ExecutionException e) {
-				status = StateExecutionStatus.FAILED;
+				status = StateExecutionStatus.FAIL;
 				log.error(e.getMessage(), e);
 				e.printStackTrace();
 			}

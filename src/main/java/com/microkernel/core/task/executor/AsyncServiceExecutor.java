@@ -55,7 +55,7 @@ public class AsyncServiceExecutor implements ServiceExecutor,RejectedExecutionHa
 				String status = "FAIL";
 				try{
 					service.process(context.getRequest(), context);
-					status = "DONE";
+					status = "SUCCESS";
 				}catch(Exception e){
 					context.setException(e);
 				}

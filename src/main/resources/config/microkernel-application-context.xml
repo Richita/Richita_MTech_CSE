@@ -73,7 +73,6 @@
 		<property name="waitForTasksToCompleteOnShutdown" value="${SERVICE_ALLOWTASKCOMPLETE_ONSHUTDOWN}" />
 	</bean>
 
-	<bean id="springInit" class="com.microkernel.core.spring.bean.SpringConfiguration"></bean>
 	
 	<bean id="propertyEditors" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
 		<property name="customEditors">

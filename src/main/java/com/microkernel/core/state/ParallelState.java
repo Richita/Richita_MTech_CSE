@@ -58,16 +58,16 @@ public class ParallelState extends AbstractState {
 		for (Future<String> task : tasks) {
 			try {
 				String result = task.get(getTimeout(), TimeUnit.MILLISECONDS);
-				if(result.equals("DONE")){
+				if(result.equals("SUCCESS")){
 					status = StateExecutionStatus.COMPLETED;
 				}else{
-					status = StateExecutionStatus.FAILED;
+					status = StateExecutionStatus.FAIL;
 				}
 			} catch (ExecutionException e) {
-				status = StateExecutionStatus.FAILED;
+				status = StateExecutionStatus.FAIL;
 				log.error(e.getMessage(), e);
 			} catch (InterruptedException e) {
-				status = StateExecutionStatus.FAILED;
+				status = StateExecutionStatus.FAIL;
 				log.error(e.getMessage(), e);
 			}
 		}
